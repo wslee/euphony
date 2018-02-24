@@ -1,0 +1,25 @@
+#!/bin/bash
+
+cd thirdparty
+
+# Build libeusolver
+cd libeusolver
+mkdir -p build
+cd build && cmake ..
+make && cd ..
+cd ..
+
+# Build python3
+tar -xf Python-3.5.1.tgz
+cd Python-3.5.1 && ./configure && make -j 8 && cp python python3 && cd ..
+
+# Build z3
+cd z3
+../Python-3.5.1/python3 scripts/mk_make.py
+cd build && make -j 8 && cd ..
+cd ..
+
+cd ..
+
+#cd bin && ./starexec_run_default CrCy_10-sbox2-D5-sIn11.sl
+

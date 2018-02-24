@@ -1,0 +1,9 @@
+#!/bin/bash
+profile_opt="-m cProfile -s time "
+profile_opt=""
+WORKDIR=`pwd`
+export Z3_LIBRARY_PATH="$WORKDIR/thirdparty/z3/build/"
+PYTHONPATH=$WORKDIR/src:$WORKDIR/thirdparty/z3/build/python:$WORKDIR/thirdparty/libeusolver/build:$PYTHONPATH python3 ${profile_opt} $WORKDIR/bin/stat.py $@
+
+# EOF
+
