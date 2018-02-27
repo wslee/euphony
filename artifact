@@ -131,6 +131,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="cmd")
     subparser = subparsers.add_parser("string", help="Run the String Benchmark Programs")
+    subparser = subparsers.add_parser("string_flashfill", help="Run the String Benchmark Programs (used for comparison to FlashFill)")
     subparser.add_argument("--timeout", type = int, default = 3600)
     subparser.add_argument("--memory", type = int, default = 16)
     subparser.add_argument("--strategy", type = str, default = "")
