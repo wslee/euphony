@@ -22,7 +22,7 @@ $ ./artifact [string | bitvec | circuit] --timeout 3600 --only_euphony --strateg
 ## Reproducing Table 7 (comparison between Euphony and FlashFill)
 ### Running Euphony
 ```sh
-$ ./artifact string_flashfill [--timeout <sec> (default: 3600)] [--memory <GB> (default: 16)]
+$ ./artifact string_flashfill --timeout 600 --only_euphony [--memory <GB> (default: 16)]
 ```
 ### Running FlashFill
 1. Modify the first line in "bin/run.ps1" to set an output directory. 
