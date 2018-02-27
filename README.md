@@ -20,11 +20,11 @@ $ ./artifact [string | bitvec | circuit] --timeout 3600 --only_euphony --strateg
 ```
 
 ## Reproducing Table 7 (comparison between Euphony and FlashFill)
-# Running Euphony
+### Running Euphony
 ```sh
 $ ./artifact string_flashfill [--timeout <sec> (default: 3600)] [--memory <GB> (default: 16)]
 ```
-# Running FlashFill
+### Running FlashFill
 1. Modify the first line in "bin/run.ps1" to set an output directory. 
 2. Launch Windows PowerShell and run the PowerShell script "bin/run.ps1".
 
