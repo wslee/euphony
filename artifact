@@ -107,7 +107,8 @@ def print_header(args):
 def run(args, logger):
     os.makedirs('euphony-out/' + args.cmd, 0o755, True)
     inputs = [ f for f in os.listdir('benchmarks/' + args.cmd + '/test') \
-               if f.endswith('.sl') and is_valid(f) ]
+               if f.endswith('.sl')] and is_valid(f) 
+    inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ] 
     inputs = sorted(inputs)
 
     print_header(args)
@@ -158,7 +159,7 @@ def main():
     logger.addHandler(streamHandler)
     logger.setLevel(logging.DEBUG)
 
-    if args.cmd in [ "string", "bitvec", "circuit" ] and args.strategy in [ "", "uniform", "pcfg", "pcfg_uniform" ]:
+    if args.cmd in [ "string", "bitvec", "circuit", "string_flashfill" ] and args.strategy in [ "", "uniform", "pcfg", "pcfg_uniform" ]:
         run(args, logger)
     else:
         print("Invalid Argument")
