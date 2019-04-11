@@ -35,3 +35,4 @@
 (constraint (= (f "CT-576") "CT-576"))
 (constraint (= (f "N/A") "N/A"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.substr _arg_0 0 (str.indexof (str.++ _arg_0 "|") "|" 1)))

@@ -229,3 +229,4 @@
 (constraint (= (f "Jenee Pannell") "Pannell"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name (+ (str.indexof name " " 0) 1) (str.len name)))

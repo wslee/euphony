@@ -32,3 +32,4 @@
 (constraint (= (f "+6 775-969-238") "238"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name (- (str.len name) 3) 3))

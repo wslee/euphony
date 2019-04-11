@@ -79,3 +79,4 @@
 (constraint (= (Spec k1 k2 k3 r1 r2 r3 r4) (Imp k1 k2 k3 r1 r2 r3 r4)))
 (check-synth)
 
+(define-fun Imp_1 ((k1 Bool) (k2 Bool) (k3 Bool) (r1 Bool) (r2 Bool) (r3 Bool) (r4 Bool)) Bool (not (xor (and (and k3 k3) (not k2)) (not (xor r4 k1)))))

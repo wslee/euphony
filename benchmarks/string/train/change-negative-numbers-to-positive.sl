@@ -35,3 +35,4 @@
 (constraint (= (f "5.125") "5.125"))
 (constraint (= (f "-%43.00") "%43.00"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.replace _arg_0 "-" ""))

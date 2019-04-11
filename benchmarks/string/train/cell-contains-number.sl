@@ -34,3 +34,4 @@
 (constraint (= (f "A bird in the hand is worth two in the bush.") false))
 (constraint (= (f "The 15 shortcuts you simply must know") true))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Bool (str.contains (str.replace _arg_0 "2" "1") "1"))

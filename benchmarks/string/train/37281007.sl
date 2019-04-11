@@ -33,3 +33,4 @@
 (constraint (= (f "ABC" "D") false))
 (constraint (= (f "ABC" "BC") true))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Bool (str.suffixof _arg_1 _arg_0))

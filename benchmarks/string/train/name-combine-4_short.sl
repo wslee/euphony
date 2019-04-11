@@ -30,3 +30,4 @@
 (constraint (= (f "Rudolf" "Akiyama") "Akiyama, R."))
 
 (check-synth)
+(define-fun f_1 ((firstname String) (lastname String)) String (str.++ (str.++ (str.++ (str.++ lastname ",") " ") (str.at firstname 0)) "."))

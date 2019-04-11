@@ -34,3 +34,4 @@
 (constraint (= (f "An example string with _username in it RT _AwesomeUser says _username is awesome" "AwesomeUser") 1))
 (constraint (= (f "An _example string with _example in it is awesome _example" "example") 3))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Int (+ (- 3 (str.len (str.substr _arg_1 (+ 3 3) 3))) 1))

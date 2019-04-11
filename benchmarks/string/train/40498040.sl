@@ -36,3 +36,4 @@
 (constraint (= (f "some project, overhead") false))
 (constraint (= (f "some project, other, boo") true))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Bool (= (str.indexof _arg_0 "overhead" 0) -1))

@@ -36,3 +36,4 @@
 (constraint (= (f "Oil Extraction US") "Oil Extraction"))
 (constraint (= (f "Fishing") "Fishing"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.replace (str.replace _arg_0 "CAN" "US") (str.++ " " "US") ""))

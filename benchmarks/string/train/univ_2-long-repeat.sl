@@ -115,3 +115,4 @@
 
 
 (check-synth)
+(define-fun f_1 ((col1 String) (col2 String)) String  (str.++ (str.++ col1 (str.++ "," " ")) (ite (str.suffixof "USA" col2) col2 (str.++ col2 (str.++ (str.++ "," " ") "USA")))))

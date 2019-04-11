@@ -36,3 +36,4 @@
 (constraint (= (f "spreadsheet" 4) "e"))
 (constraint (= (f "spreadsheet" 5) "a"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 Int)) String (str.at (str.++ " " _arg_0) _arg_1))

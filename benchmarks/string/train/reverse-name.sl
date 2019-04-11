@@ -31,3 +31,4 @@
 (constraint (= (f "Lara" "Constable") "Constable Lara"))
 
 (check-synth)
+(define-fun f_1 ((firstname String) (lastname String)) String (str.++ (str.++ lastname " ") firstname))

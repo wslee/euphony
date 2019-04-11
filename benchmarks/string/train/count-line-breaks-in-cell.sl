@@ -34,3 +34,4 @@
 (constraint (= (f "one/ntwo") 2))
 (constraint (= (f "one/ntwo/nthree") 3))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Int (str.len (str.++ (int.to.str (str.indexof _arg_0 "/n" 1)) (int.to.str (str.len _arg_0)))))

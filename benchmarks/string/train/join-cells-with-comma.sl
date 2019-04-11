@@ -33,3 +33,4 @@
 (constraint (= (f "figs" "" "apples") "figs, apples"))
 (constraint (= (f "mangos" "kiwis" "grapes") "mangos, kiwis, grapes"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String)) String (str.++ _arg_0 (str.++ "," (str.++ " " (str.++ _arg_1 (ite (str.prefixof _arg_1 _arg_0) _arg_2 (str.++ "," (str.++ " " _arg_2))))))))

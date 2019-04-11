@@ -36,3 +36,4 @@
 (constraint (= (f "black sea, white ribbon" "red" "blue" "pink") false))
 (constraint (= (f "red green blue" "red" "blue" "pink") true))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String) (_arg_3 String)) Bool (str.prefixof _arg_1 _arg_0))

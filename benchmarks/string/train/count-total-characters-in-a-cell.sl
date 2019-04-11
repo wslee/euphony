@@ -34,3 +34,4 @@
 (constraint (= (f "The quick fox") 13))
 (constraint (= (f "The quick  fox") 14))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Int (str.len _arg_0))

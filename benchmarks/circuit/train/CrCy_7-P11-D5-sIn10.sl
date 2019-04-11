@@ -47,3 +47,4 @@
 
 (check-synth)
 
+(define-fun skel_1 ((LN85 Bool) (LN86 Bool)) Bool (not (not (xor (and LN86 LN86) LN85))))

@@ -37,3 +37,4 @@
 (constraint (= (f "3 0 3 0 1 2") 2))
 (constraint (= (f "5 3 2 5 6 1") 6))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Int (ite (str.contains _arg_0 "0") (ite (str.suffixof "0" _arg_0) (+ (+ 1 1) 1) (ite (str.prefixof "0" _arg_0) (+ 1 1) (ite (= (+ (str.indexof _arg_0 "0" 1) -1) 1) (ite (str.contains _arg_0 (int.to.str 1)) (+ 1 1) (+ (+ 1 1) 1)) (+ (+ (+ 1 1) 1) 1)))) (str.indexof _arg_0 (str.at _arg_0 0) 1)))

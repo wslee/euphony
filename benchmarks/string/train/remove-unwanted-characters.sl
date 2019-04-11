@@ -36,3 +36,4 @@
 (constraint (= (f "zx66448" "4") "zx668"))
 (constraint (= (f "zx66448" "8") "zx6644"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) String (str.replace (str.replace _arg_0 _arg_1 "") _arg_1 ""))

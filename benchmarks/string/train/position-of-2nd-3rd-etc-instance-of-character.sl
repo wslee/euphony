@@ -33,3 +33,4 @@
 (constraint (= (f "100x15x50" "x" 2) 7))
 (constraint (= (f "cat-in-the-hat" "-" 3) 11))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 Int)) Int (- (str.len _arg_0) _arg_2))

@@ -31,3 +31,4 @@
 (constraint (= (f "Ducati125") "Ducati"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name 0 (- (str.len name) 3)))

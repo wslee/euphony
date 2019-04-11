@@ -33,3 +33,4 @@
 (constraint (= (f "I love apples" "I hate bananas" "banana") "I hate bananas"))
 (constraint (= (f "I love apples" "I hate bananas" "apple") "I love apples"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String)) String (ite (str.contains _arg_1 _arg_2) _arg_1 _arg_0))

@@ -35,3 +35,4 @@
 (constraint (= (f "A yellow sun in a green field" "yellow" "green" "dog") false))
 (constraint (= (f "yellow neon sign with a green background" "yellow" "green" "dog") false))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String) (_arg_3 String)) Bool (str.contains _arg_0 _arg_3))

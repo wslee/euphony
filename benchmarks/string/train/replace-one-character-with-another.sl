@@ -33,3 +33,4 @@
 (constraint (= (f "801 456 8756") "801-456-8756"))
 (constraint (= (f "978 456 8756") "978-456-8756"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.replace (str.replace _arg_0 " " "-") " " "-"))

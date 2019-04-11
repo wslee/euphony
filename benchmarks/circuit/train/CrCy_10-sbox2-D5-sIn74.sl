@@ -47,3 +47,4 @@
 
 (check-synth)
 
+(define-fun skel_1 ((LN88 Bool) (LN187 Bool)) Bool (and (not (not (and LN187 LN187))) LN88))

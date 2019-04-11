@@ -55,3 +55,4 @@ x
 (constraint (= (f #x7a22c90ed54aab68) #xf445921daa9556d1))
 (constraint (= (f #xa16d9de778940d13) #x42db3bcef1281a27))
 (check-synth)
+(define-fun f_1 ((x (BitVec 64))) (BitVec 64) (bvsub x (bvnot x)))

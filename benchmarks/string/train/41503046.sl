@@ -37,3 +37,4 @@
 (constraint (= (f "Lycopus europaeus ssp. europaeus") "Lycopus europaeus"))
 (constraint (= (f "Nymphaea alba") "Nymphaea"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.substr _arg_0 0 (str.indexof _arg_0 " " (str.len (str.++ "ssp." "ssp.")))))

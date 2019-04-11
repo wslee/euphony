@@ -38,3 +38,4 @@
 (constraint (= (f "orange") true))
 (constraint (= (f "turkey") false))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Bool (str.contains (str.++ (str.++ (str.++ "pink" "blue") "orange") "yellow") _arg_0))

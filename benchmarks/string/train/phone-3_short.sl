@@ -32,3 +32,4 @@
 (constraint (= (f "830-941-991") "(830) 941-991"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.++ "(" (str.replace name "-" (str.++ ")" " "))))

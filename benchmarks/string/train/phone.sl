@@ -31,3 +31,4 @@
 (constraint (= (f "244-655-094") "244"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name 0 3))

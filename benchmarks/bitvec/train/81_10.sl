@@ -55,3 +55,4 @@ x
 (constraint (= (f #x0601e9e6b9b6d6ce) #x0000000000000001))
 (constraint (= (f #x051e1495672159e4) #x0000000000000001))
 (check-synth)
+(define-fun f_1 ((x (BitVec 64))) (BitVec 64) (ite (= (bvor #x0000000000000001 x) x) (ite (= (bvor #x0000000000000010 x) x) (bvxor (bvlshr x #x0000000000000010) #x0000000000000001) #x0000000000000000) #x0000000000000001))

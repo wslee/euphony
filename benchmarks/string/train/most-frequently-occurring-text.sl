@@ -35,3 +35,4 @@
 (constraint (= (f "firm" "firm" "soft") "firm"))
 (constraint (= (f "soft" "soft" "soft") "soft"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String)) String (ite (str.prefixof _arg_2 _arg_1) _arg_1 _arg_0))

@@ -34,3 +34,4 @@
 (constraint (= (f "An apple a day keeps the doctor away" "orange") false))
 (constraint (= (f "Better the devil you know" "you know") true))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Bool (str.contains _arg_0 _arg_1))

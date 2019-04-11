@@ -33,3 +33,4 @@
 (constraint (= (f "apple apples" "apple") 2))
 (constraint (= (f "an orange among the oranges is a spoiled orange" "orange") 3))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Int (+ (+ (+ (str.len _arg_1) -1) -1) -1))

@@ -34,3 +34,4 @@
 (constraint (= (f "amy" "johnson" "google.com") "ajohnson_google.com"))
 (constraint (= (f "tom" "chang" "upenn.edu") "tchang_upenn.edu"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String)) String (str.++ (str.++ (str.++ (str.at _arg_0 0) _arg_1) "_") _arg_2))

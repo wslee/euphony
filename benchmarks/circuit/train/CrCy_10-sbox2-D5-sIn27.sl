@@ -51,3 +51,4 @@
 
 (check-synth)
 
+(define-fun skel_1 ((LN10 Bool) (LN33 Bool) (LN49 Bool) (LN234 Bool)) Bool (xor (xor (and (and LN10 LN10) LN49) (not LN33)) (not LN234)))

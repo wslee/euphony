@@ -125,3 +125,4 @@
 (constraint (= (f "+45 095-746-635") "635"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name (- (str.len name) 3) 3))

@@ -34,3 +34,4 @@
 (constraint (= (f "bobby smith" "bobt_sphynx.uk.co") "bobt"))
 (constraint (= (f "art lennox" "art.lennox_svxn.com") "art.lennox"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) String (str.substr _arg_1 0 (str.indexof _arg_1 "_" 1)))

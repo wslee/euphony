@@ -31,19 +31,19 @@ begin_instrs = [Tcond.UP, Tcond.LEFT, Tcond.PREV_DFS]
 move_instrs = [Tcond.UP, Tcond.DOWN_FIRST, Tcond.DOWN_LAST, Tcond.LEFT, Tcond.RIGHT, Tcond.PREV_DFS]
 
 # parameter for penalizing too complicated tcond programs
-# lambda_penalize = 0.05
+lambda_penalize = 1.0
 # maximum #. of iteration for the total training
-max_iter = 10
+max_iter = 20
 # maximum #. of iteration for program generator
-max_iter_gen = 100
+max_iter_gen = 50
 # maximum #. of iteration for data sampling
-max_iter_sample = 100
+max_iter_sample = 50
 # maximum size of candidate program/data list
-pool_size = 10
+pool_size = 20
 # k-fold cross validation
-k_fold = 2
+# k_fold = 2
 # perform witten-bell interpolation?
-do_wb = True
+do_backoff = True
 # perform data sampling?
 do_sample = True
 # learn PHOG on a decomposed grammar?
@@ -53,15 +53,14 @@ eu = False
 max_prog_size = 30
 
 # thresholds for penalizing long instructions
-wb_threshold = 300000
+backoff_threshold = 300000
 write_num_threshold = 5
 
 # lambda candidates
-lambda_candidates = [1.0, 2.0, 3.0, 4.0, 5.0]
-# lambda_candidates = [10.0, 20.0, 30.0, 40.0, 50.0]
+# lambda_candidates = [1.0, 2.0, 3.0, 4.0, 5.0]
 
 # alpha value for stupid backoff
-alpha = 0.1
+alpha = 0.2
 
 # pre-compute information about exprs
 exprs_info = None
@@ -146,39 +145,39 @@ def get_func_exprs_grammars(benchmark_files):
         if defs is None: defs = []
         if len(defs) > 0:
             for [name, args_data, ret_type_data, interpretation] in defs:
-                print(name, ' ',synth_fun_name)
-                if synth_fun_name in name:
-                    for eusolver in ([True] if eu else [False]):
-                        ((arg_vars, arg_types, arg_var_map), return_type) = parser._process_function_defintion(args_data,
-                                                                                                               ret_type_data)
-                        # category flag
-                        flag = (return_type, eusolver, spec_flag)
+                # print(name, ' ',synth_fun_name)
+                # if synth_fun_name in name:
+                for eusolver in ([True] if eu else [False]):
+                    ((arg_vars, arg_types, arg_var_map), return_type) = parser._process_function_defintion(args_data,
+                                                                                                           ret_type_data)
+                    # category flag
+                    flag = (return_type, eusolver, spec_flag)
 
-                        expr = parser.sexp_to_expr(interpretation, syn_ctx, arg_var_map)
-                        macro_func = semantics_types.MacroFunction(name, len(arg_vars), tuple(arg_types), return_type, expr,
-                                                                   arg_vars)
-                        # for eusolver  (recording macro functions of which definition include ite)
-                        if eusolver:
-                            app = exprs.find_application(expr, 'ite')
-                            if app is not None: ite_related_macros.append(name)
+                    expr = parser.sexp_to_expr(interpretation, syn_ctx, arg_var_map)
+                    macro_func = semantics_types.MacroFunction(name, len(arg_vars), tuple(arg_types), return_type, expr,
+                                                               arg_vars)
+                    # for eusolver  (recording macro functions of which definition include ite)
+                    if eusolver:
+                        app = exprs.find_application(expr, 'ite')
+                        if app is not None: ite_related_macros.append(name)
 
-                        macro_instantiator.add_function(name, macro_func)
-                        i = 0
-                        subs_pairs = []
-                        for (var_expr, ty) in zip(arg_vars, arg_types):
-                            param_expr = exprs.FormalParameterExpression(None, ty, i)
-                            subs_pairs.append((var_expr, param_expr))
-                            i += 1
-                        expr = exprs.substitute_all(expr, subs_pairs)
-                        # resolve macro functions involving ite (for enumeration of pred exprs (eusolver))
-                        if eusolver:
-                            for fname in ite_related_macros:
-                                app = exprs.find_application(expr, fname)
-                                if app is None: continue
-                                expr = macro_instantiator.instantiate_macro(expr, fname)
-                        if flag not in exprs_per_category:
-                            exprs_per_category[flag] = set([])
-                        exprs_per_category[flag].add((expr, fetchop_func))
+                    macro_instantiator.add_function(name, macro_func)
+                    i = 0
+                    subs_pairs = []
+                    for (var_expr, ty) in zip(arg_vars, arg_types):
+                        param_expr = exprs.FormalParameterExpression(None, ty, i)
+                        subs_pairs.append((var_expr, param_expr))
+                        i += 1
+                    expr = exprs.substitute_all(expr, subs_pairs)
+                    # resolve macro functions involving ite (for enumeration of pred exprs (eusolver))
+                    if eusolver:
+                        for fname in ite_related_macros:
+                            app = exprs.find_application(expr, fname)
+                            if app is None: continue
+                            expr = macro_instantiator.instantiate_macro(expr, fname)
+                    if flag not in exprs_per_category:
+                        exprs_per_category[flag] = set([])
+                    exprs_per_category[flag].add((expr, fetchop_func))
 
 
 
@@ -367,11 +366,11 @@ def mutate_prog(prog):
 
 # this function is called only during training phase.
 def r_regent(data_set, prog, lambda_penalize):
-    global do_wb
+    global do_backoff
     global write_num_threshold
     # score of Tcond
     tcond_score = {}
-    if do_wb:
+    if do_backoff:
         tcond_score[Tcond.UP] = lambda_penalize * 0.0
         tcond_score[Tcond.DOWN_FIRST] = lambda_penalize * 0.0
         tcond_score[Tcond.DOWN_LAST] = lambda_penalize * 0.0
@@ -463,7 +462,7 @@ def get_mle_wb(prog, exprs):
     # give up if too many entries are expected.
     n_mle_entries = len(all_vocabs) ** (cond_len + 1)
     print('# mle entries : ', n_mle_entries)
-    if (n_mle_entries > wb_threshold):
+    if (n_mle_entries > backoff_threshold):
         print('gave up interpolation due to too many possibilities : ', n_mle_entries)
         return get_mle_reg(prog, exprs)
 
@@ -540,7 +539,7 @@ def get_mle_backoff(prog, exprs):
     # give up if too many entries are expected.
     n_mle_entries = len(all_vocabs) ** (cond_len + 1)
     print('# mle entries : ', n_mle_entries)
-    if (n_mle_entries > wb_threshold):
+    if (n_mle_entries > backoff_threshold):
         print('gave up interpolation due to too many possibilities : ', n_mle_entries)
         return get_mle_reg(prog, exprs)
 
@@ -645,7 +644,7 @@ def remove_zero_probs(mle):
 
 
 def get_mle(prog, exprs, training=True):
-    mle = get_mle_backoff(prog, exprs) if do_wb and not training else get_mle_reg(prog, exprs)
+    mle = get_mle_backoff(prog, exprs) if do_backoff and not training else get_mle_reg(prog, exprs)
     remove_zero_probs(mle)
     return mle
 
@@ -766,7 +765,7 @@ def prog_gen(data_set, progs, lambda_penalize):
 # exprs : expr set
 def train_model(exprs, lambda_penalize, silent=False):
     if not silent: print('Training with %d expressions...' % (len(exprs)))
-    assert (k_fold > 1)
+    # assert (k_fold > 1)
     # init
     random.seed()
 
@@ -825,8 +824,8 @@ def param_setting(args):
     global max_iter_gen
     global max_iter_sample
     global pool_size
-    global k_fold
-    global do_wb
+    # global k_fold
+    global do_backoff
     global do_sample
     global max_prog_size
     global eu
@@ -838,8 +837,8 @@ def param_setting(args):
     max_iter_sample = args.max_iter_sample
     pool_size = args.pool_size
     max_prog_size = args.max_size
-    k_fold = args.k_fold
-    do_wb = args.do_wb
+    # k_fold = args.k_fold
+    do_backoff = args.do_backoff
     do_sample = args.do_sample
     eu = args.eu
 
@@ -849,8 +848,8 @@ def param_setting(args):
     print('\t max_iter_gen : ', max_iter_gen)
     print('\t max_iter_sample : ', max_iter_sample)
     print('\t pool_size : ', pool_size)
-    print('\t k_fold : ', k_fold)
-    print('\t do_wb : ', do_wb)
+    # print('\t k_fold : ', k_fold)
+    print('\t do_backoff : ', do_backoff)
     print('\t do_sample : ', do_sample)
     print('\t eu : ', eu)
 
@@ -901,83 +900,83 @@ def get_all_atomic_exprs(fun_exprs):
     return (result_termexprs, result_predexprs)
 
 
-def lambda_selector(data):
-    global n_cores
-    global lambda_candidates
-    import numpy as np
-    import sklearn.cluster
-    import distance
-
-    print('lambda selection...')
-    data = list(data)
-    k = min(k_fold, len(data))
-    lambda_vals = lambda_candidates
-    lambda2scores = {}
-    for lambda_val in lambda_vals:
-        lambda2scores[lambda_val] = []
-
-    def clustering(expr_strs, k):
-        words = np.asarray(expr_strs)  # So that indexing with a list will work
-        lev_similarity = -1 * np.array([[distance.levenshtein(w1, w2) for w1 in words] for w2 in words])
-        affprop = sklearn.cluster.KMeans(n_clusters=k, n_jobs=n_cores, precompute_distances=True, max_iter=1000, n_init=100)
-        affprop.fit(lev_similarity)
-        ind2words = {}
-        for i, ind in enumerate(affprop.labels_):
-            if ind in ind2words:
-                ind2words[ind].append(expr_strs[i])
-            else:
-                ind2words[ind] = [expr_strs[i]]
-        return ind2words
-
-    # cross-validation
-    def get_partitions(progs, k_fold):
-        subset_size = int(len(progs) / k_fold)
-        result = []
-        for i in range(k_fold):
-            if i == k_fold - 1:
-                testing_this_round = progs[i * subset_size:]
-            else:
-                testing_this_round = progs[i * subset_size:][:subset_size]
-            training_this_round = list(set(progs) - set(testing_this_round))
-            # training_this_round = solution_files[:i * subset_size] + solution_files[(i + 1) * subset_size:]
-            print('testing : ', testing_this_round)
-            print('training : ', training_this_round)
-            result.append((testing_this_round, training_this_round))
-        return result
-
-    def get_stratified_partitions(progs, k):
-        global k_fold
-        clusters = clustering(progs, k)
-        ordered_progs = []
-        cycler = itertools.cycle(range(0, k_fold))
-        while len(ordered_progs) != len(progs):
-            i = next(cycler)
-            if len(clusters[i]) > 0:
-                prog = random.choice(clusters[i])
-                clusters[i].remove(prog)
-                ordered_progs.append(prog)
-
-        return k, get_partitions(ordered_progs, k)
-
-
-    k, stratified_cv_result = get_stratified_partitions(data, k)
-
-    for lambda_val in lambda_vals:
-        print('lambda : %.2f' % lambda_val)
-        for i in range(0, k):
-            (test_set, train_set) = stratified_cv_result[i]
-            # print([exprs.expression_to_string(e) for e in test_set])
-            # print([exprs.expression_to_string(e) for e in train_set])
-            prog = train_model(train_set, lambda_val, silent=True)
-            mle = get_mle(prog, train_set, training=True)
-            for expr in test_set:
-                l_ent_sum = compute_score_with_cache(mle, prog, expr)
-                lambda2scores[lambda_val].append(l_ent_sum)
-            print('avg score : %.2f' % (sum(lambda2scores[lambda_val]) / len(lambda2scores[lambda_val])))
-
-    best_lambda = min(lambda2scores.keys(), key=(lambda key: sum(lambda2scores[key]) / len(lambda2scores[key])))
-    print('lambda chosen : ', best_lambda)
-    return best_lambda
+# def lambda_selector(data):
+#     global n_cores
+#     global lambda_candidates
+#     import numpy as np
+#     import sklearn.cluster
+#     import distance
+#
+#     print('lambda selection...')
+#     data = list(data)
+#     k = min(k_fold, len(data))
+#     lambda_vals = lambda_candidates
+#     lambda2scores = {}
+#     for lambda_val in lambda_vals:
+#         lambda2scores[lambda_val] = []
+#
+#     def clustering(expr_strs, k):
+#         words = np.asarray(expr_strs)  # So that indexing with a list will work
+#         lev_similarity = -1 * np.array([[distance.levenshtein(w1, w2) for w1 in words] for w2 in words])
+#         affprop = sklearn.cluster.KMeans(n_clusters=k, n_jobs=n_cores, precompute_distances=True, max_iter=1000, n_init=100)
+#         affprop.fit(lev_similarity)
+#         ind2words = {}
+#         for i, ind in enumerate(affprop.labels_):
+#             if ind in ind2words:
+#                 ind2words[ind].append(expr_strs[i])
+#             else:
+#                 ind2words[ind] = [expr_strs[i]]
+#         return ind2words
+#
+#     # cross-validation
+#     def get_partitions(progs, k_fold):
+#         subset_size = int(len(progs) / k_fold)
+#         result = []
+#         for i in range(k_fold):
+#             if i == k_fold - 1:
+#                 testing_this_round = progs[i * subset_size:]
+#             else:
+#                 testing_this_round = progs[i * subset_size:][:subset_size]
+#             training_this_round = list(set(progs) - set(testing_this_round))
+#             # training_this_round = solution_files[:i * subset_size] + solution_files[(i + 1) * subset_size:]
+#             print('testing : ', testing_this_round)
+#             print('training : ', training_this_round)
+#             result.append((testing_this_round, training_this_round))
+#         return result
+#
+#     def get_stratified_partitions(progs, k):
+#         global k_fold
+#         clusters = clustering(progs, k)
+#         ordered_progs = []
+#         cycler = itertools.cycle(range(0, k_fold))
+#         while len(ordered_progs) != len(progs):
+#             i = next(cycler)
+#             if len(clusters[i]) > 0:
+#                 prog = random.choice(clusters[i])
+#                 clusters[i].remove(prog)
+#                 ordered_progs.append(prog)
+#
+#         return k, get_partitions(ordered_progs, k)
+#
+#
+#     k, stratified_cv_result = get_stratified_partitions(data, k)
+#
+#     for lambda_val in lambda_vals:
+#         print('lambda : %.2f' % lambda_val)
+#         for i in range(0, k):
+#             (test_set, train_set) = stratified_cv_result[i]
+#             # print([exprs.expression_to_string(e) for e in test_set])
+#             # print([exprs.expression_to_string(e) for e in train_set])
+#             prog = train_model(train_set, lambda_val, silent=True)
+#             mle = get_mle(prog, train_set, training=True)
+#             for expr in test_set:
+#                 l_ent_sum = compute_score_with_cache(mle, prog, expr)
+#                 lambda2scores[lambda_val].append(l_ent_sum)
+#             print('avg score : %.2f' % (sum(lambda2scores[lambda_val]) / len(lambda2scores[lambda_val])))
+#
+#     best_lambda = min(lambda2scores.keys(), key=(lambda key: sum(lambda2scores[key]) / len(lambda2scores[key])))
+#     print('lambda chosen : ', best_lambda)
+#     return best_lambda
 
 
 if __name__ == "__main__":
@@ -986,18 +985,18 @@ if __name__ == "__main__":
     import argparse
     sys.setrecursionlimit(10000)
 
-    argparser = argparse.ArgumentParser(description='Train SPHOG model')
-    argparser.add_argument('-lambda_penalize', type=float, default=0.0)
-    argparser.add_argument('-alpha', type=float, default=0.4)
-    argparser.add_argument('-max_iter', type=int, default=10)
-    argparser.add_argument('-max_iter_gen', type=int, default=20)
-    argparser.add_argument('-max_iter_sample', type=int, default=20)
-    argparser.add_argument('-pool_size', type=int, default=10)
+    argparser = argparse.ArgumentParser(description='Train PHOG model')
+    argparser.add_argument('-lambda_penalize', type=float, default=1.0)
+    argparser.add_argument('-alpha', type=float, default=0.2)
+    argparser.add_argument('-max_iter', type=int, default=20)
+    argparser.add_argument('-max_iter_gen', type=int, default=50)
+    argparser.add_argument('-max_iter_sample', type=int, default=50)
+    argparser.add_argument('-pool_size', type=int, default=20)
     argparser.add_argument('-max_size', type=int, default=30)
-    argparser.add_argument('-k_fold', type=int, default=4)
-    argparser.add_argument('-do_wb', action='store_true')
+    # argparser.add_argument('-k_fold', type=int, default=4)
+    argparser.add_argument('-do_backoff', action='store_true')
     argparser.add_argument('-do_sample', action='store_true')
-    argparser.add_argument('-text', action='store_true')
+    # argparser.add_argument('-text', action='store_true')
     argparser.add_argument('-eu', action='store_true')
     argparser.add_argument('-pcfg', action='store_true')
     argparser.add_argument('-out', type=str, default='mle')
@@ -1012,7 +1011,7 @@ if __name__ == "__main__":
     output_file = args.out
     benchmark_files = args.bench
     pcfg = args.pcfg
-    text_out = args.text
+    # text_out = args.text
 
 
     # bechmark_file format : original benchmark_file + its solution
@@ -1033,8 +1032,8 @@ if __name__ == "__main__":
 
     # setting maximum number of writes
     all_vocabs = get_mle.all_vocabs
-    write_num_threshold = math.log2(wb_threshold) / math.log2(len(all_vocabs)) - 1 if args.do_wb else max_prog_size / 2
-    print('SPHOG instrs with |Write| > %.2f will be ignored.' % write_num_threshold)
+    write_num_threshold = math.log2(backoff_threshold) / math.log2(len(all_vocabs)) - 1 if args.do_backoff else max_prog_size / 2
+    print('PHOG instrs with |Write| > %.2f will be ignored.' % write_num_threshold)
 
     # for eusolver
     rettype2mle = {}
@@ -1077,10 +1076,10 @@ if __name__ == "__main__":
             term_prog = None
             term_mle = None
         else:
-            if args.lambda_penalize == 0.0:
-                lambda_penalize = lambda_selector(term_exprs)
-            else:
-                lambda_penalize = args.lambda_penalize
+            # if args.lambda_penalize == 0.0:
+            #     lambda_penalize = lambda_selector(term_exprs)
+            # else:
+            lambda_penalize = args.lambda_penalize
             if pcfg:
                 term_prog = [Tcond.WRITE_VALUE]
             else:
@@ -1099,10 +1098,10 @@ if __name__ == "__main__":
             pred_prog = None
             pred_mle = None
         else:
-            if args.lambda_penalize == 0.0:
-                lambda_penalize = lambda_selector(pred_exprs)
-            else:
-                lambda_penalize = args.lambda_penalize
+            # if args.lambda_penalize == 0.0:
+            #     lambda_penalize = lambda_selector(pred_exprs)
+            # else:
+            lambda_penalize = args.lambda_penalize
 
             if pcfg:
                 pred_prog = [Tcond.WRITE_VALUE]
@@ -1120,14 +1119,14 @@ if __name__ == "__main__":
         # store the mles for dumping
         rettype2mle[key] = ((term_prog, term_mle), (pred_prog, pred_mle))
 
-    if text_out:
-        with open(output_file, 'w') as f:
-            for (ret_type_str, eusolver, flag), ((term_prog, term_mle), (pred_prog, pred_mle)) in rettype2mle.items():
-                # XXX : for stochastic solver
-                if not eusolver:
-                    # f.write('%s %s\n' % (ret_type_str, '(eusolver)' if eusolver else ''))
-                    f.write('%s\n' % prog_to_str(term_prog))
-                    print_mle(f, term_mle)
-    else:
-        with open(output_file, 'wb') as f:
-            pickle.dump(rettype2mle, f)
+    # if text_out:
+    #     with open(output_file, 'w') as f:
+    #         for (ret_type_str, eusolver, flag), ((term_prog, term_mle), (pred_prog, pred_mle)) in rettype2mle.items():
+    #             # XXX : for stochastic solver
+    #             if not eusolver:
+    #                 # f.write('%s %s\n' % (ret_type_str, '(eusolver)' if eusolver else ''))
+    #                 f.write('%s\n' % prog_to_str(term_prog))
+    #                 print_mle(f, term_mle)
+    # else:
+    with open(output_file, 'wb') as f:
+        pickle.dump(rettype2mle, f)

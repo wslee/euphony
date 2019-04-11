@@ -36,3 +36,4 @@
 (constraint (= (f "hot pink socks" "blue" "pink" "neon") true))
 (constraint (= (f "deep black eyes" "yellow" "green" "neon") false))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String) (_arg_2 String) (_arg_3 String)) Bool (str.contains _arg_0 _arg_2))

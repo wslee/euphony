@@ -1045,3 +1045,4 @@ x
 (constraint (= (f #x768b1e43e65da10e) #x0000000000000000))
 (constraint (= (f #x5dce1e88c197b7db) #x0000000000000000))
 (check-synth)
+(define-fun f_1 ((x (BitVec 64))) (BitVec 64) #x0000000000000000)

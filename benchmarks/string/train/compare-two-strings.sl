@@ -35,3 +35,4 @@
 (constraint (= (f "peach" "peach") true))
 (constraint (= (f "cherry" "cherrY") false))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Bool (str.prefixof _arg_1 _arg_0))

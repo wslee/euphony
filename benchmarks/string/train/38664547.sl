@@ -38,3 +38,4 @@
 (constraint (= (f "mouse") "mouse"))
 (constraint (= (f "knowthat") "know"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.replace _arg_0 (str.replace "that" _arg_0 "") ""))

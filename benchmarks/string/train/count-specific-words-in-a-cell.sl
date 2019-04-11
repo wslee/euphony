@@ -34,3 +34,4 @@
 (constraint (= (f "The fox jumped over the fox" "ox") 2))
 (constraint (= (f "The fox jumped over the fox" "Fox") 0))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Int (+ (ite (str.suffixof _arg_1 _arg_0) 1 -1) 1))

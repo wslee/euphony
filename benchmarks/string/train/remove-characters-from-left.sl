@@ -34,3 +34,4 @@
 (constraint (= (f "**512A" 2) "512A"))
 (constraint (= (f "343DMX" 3) "DMX"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 Int)) String (str.substr _arg_0 _arg_1 (str.len _arg_0)))

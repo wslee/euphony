@@ -36,3 +36,4 @@
 (constraint (= (f "Hannah" "a") 2))
 (constraint (= (f "Hannah" "h") 1))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 String)) Int (str.len (str.substr _arg_0 (str.indexof _arg_0 _arg_1 1) (+ 1 1))))

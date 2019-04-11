@@ -51,3 +51,4 @@
 
 (check-synth)
 
+(define-fun skel_1 ((LN236 Bool) (LN252 Bool) (LN253 Bool) (LN375 Bool)) Bool (xor (xor (xor (and LN253 LN253) LN252) (not LN236)) LN375))

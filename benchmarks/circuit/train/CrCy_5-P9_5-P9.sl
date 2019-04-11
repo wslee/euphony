@@ -24,3 +24,4 @@
 (constraint (= (Spec k1 k2 k3) (Imp k1 k2 k3)))
 (check-synth)
 
+(define-fun Imp_1 ((k1 Bool) (k2 Bool) (k3 Bool)) Bool (xor (xor k3 k1) (and k3 k2)))

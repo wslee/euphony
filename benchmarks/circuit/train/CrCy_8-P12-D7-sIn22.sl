@@ -61,3 +61,4 @@
 
 (check-synth)
 
+(define-fun skel_1 ((LN135 Bool) (LN142 Bool) (LN326 Bool)) Bool (not (not (not (xor (xor (and LN142 LN142) LN135) LN326)))))

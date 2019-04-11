@@ -33,3 +33,4 @@
 (constraint (= (f "Name= ABC Retailers") "ABC Retailers"))
 (constraint (= (f " ame= XYZ Suppliers") "XYZ Suppliers"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) String (str.substr _arg_0 (+ (+ (str.len "Name") 1) 1) (str.len _arg_0)))

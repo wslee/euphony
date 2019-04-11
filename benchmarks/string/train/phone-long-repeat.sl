@@ -425,3 +425,4 @@
 (constraint (= (f "566-086-726") "566"))
 
 (check-synth)
+(define-fun f_1 ((name String)) String (str.substr name 0 3))

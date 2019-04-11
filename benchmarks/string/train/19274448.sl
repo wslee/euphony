@@ -33,3 +33,4 @@
 (constraint (= (f "dhfjd9999999dfda") true))
 (constraint (= (f "ddsss999dfdfsfd") false))
 (check-synth)
+(define-fun f_1 ((_arg_0 String)) Bool (str.contains _arg_0 "9999999"))

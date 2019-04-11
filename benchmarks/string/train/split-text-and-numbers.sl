@@ -35,3 +35,4 @@
 (constraint (= (f "peaches0" 8) "peaches"))
 (constraint (= (f "pears" 6) "pears"))
 (check-synth)
+(define-fun f_1 ((_arg_0 String) (_arg_1 Int)) String (str.substr _arg_0 0 (+ -1 _arg_1)))
