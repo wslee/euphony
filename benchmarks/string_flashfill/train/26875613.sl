@@ -32,3 +32,4 @@
 (constraint (= (f "geb. 14 oct 1956 ") " "))
 (constraint (= (f "geb. 15 feb 1987 Westerkerk HRL") "Westerkerk HRL"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (- (str.to.int (str.++ "1" "9")) 2) (str.len _arg_0)))

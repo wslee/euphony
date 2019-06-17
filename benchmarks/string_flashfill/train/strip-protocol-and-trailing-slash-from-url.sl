@@ -33,3 +33,4 @@
 (constraint (= (f "ftp=//someserver.com") "someserver.com"))
 (constraint (= (f "sftp=//127.0.0.1") "127.0.0.1"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr (str.substr _arg_0 (+ (str.indexof _arg_0 "/" 0) 1) (str.len _arg_0)) 1 (str.len _arg_0)))

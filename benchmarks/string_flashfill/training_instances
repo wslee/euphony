@@ -28,6 +28,7 @@ get-domain-from-email-address_2.sl
 create-email-address-from-name.sl
 replace-one-character-with-another.sl
 remove-text-by-matching.sl
+remove-text-by-position.sl
 39648273.sl
 bikes.sl
 26262269.sl

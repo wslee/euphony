@@ -33,3 +33,4 @@
 (constraint (= (f "KOR.JPN<IDEALPRO,CASH,WON>") "WON"))
 (constraint (= (f "KOR.JPN<IDEALPRO,CASH,YEN>") "YEN"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (- (- (- (- (str.len _arg_0) 1) 1) 1) 1) (- (str.len _arg_0) 1)))

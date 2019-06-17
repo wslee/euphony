@@ -31,3 +31,4 @@
 (constraint (= (f "Dec 2, 2014, 11=23 PM - +91 90000 80000= loren ipsum") "loren ipsum"))
 (constraint (= (f "Dec 2, 2014, 11=24 PM - +91 90000 80000= loren") "loren"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (str.to.int (str.++ (int.to.str (str.len "=""-")) (int.to.str 1))) (str.len _arg_0)))

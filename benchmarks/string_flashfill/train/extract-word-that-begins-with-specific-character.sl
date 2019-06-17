@@ -32,3 +32,4 @@
 (constraint (= (f "twitter names look like= _name") "_name"))
 (constraint (= (f "with two _name1 and _name2") "_name1"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (str.indexof _arg_0 "_" 0) (- (str.indexof (str.++ _arg_0 " ") " " (str.indexof _arg_0 "_" 0)) (str.indexof _arg_0 "_" 0))))

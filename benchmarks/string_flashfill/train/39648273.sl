@@ -45,3 +45,4 @@
 (constraint (= (f "March 5 1867") "1867"))
 (constraint (= (f "April 28th 1828") "1828"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (str.indexof (str.replace _arg_0 " " (int.to.str (str.len _arg_0))) " " 1) 4))

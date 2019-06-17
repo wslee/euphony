@@ -33,3 +33,4 @@
 (constraint (= (f "7h" 2) "h"))
 (constraint (= (f "500m" 4) "m"))
 (check-synth)
+(define-fun f1 ((_arg_0 String) (_arg_1 Int)) String (str.substr (str.++ " " _arg_0) _arg_1 _arg_1))

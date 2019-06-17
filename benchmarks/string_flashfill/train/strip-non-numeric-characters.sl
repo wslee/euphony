@@ -32,3 +32,4 @@
 (constraint (= (f "the price is %500 dollars") "500"))
 (constraint (= (f "serial number %003399") "003399"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 "%" 1) 1) (- (str.indexof _arg_0 " " 0) 0)))

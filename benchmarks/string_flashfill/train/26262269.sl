@@ -31,3 +31,4 @@
 (constraint (= (f "india china japan") "india china"))
 (constraint (= (f "indonesia korea") "indonesia"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 0 (str.indexof _arg_0 " " (str.len (str.substr _arg_0 (+ (str.indexof _arg_0 " " 0) 1) (str.len _arg_0))))))

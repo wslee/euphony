@@ -32,3 +32,4 @@
 (constraint (= (f "New Truck Inc") "New Truck"))
 (constraint (= (f "ABV Trucking Inc, LLC") "ABV Trucking"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 0 (+ (str.indexof _arg_0 "Inc" 1) -1)))

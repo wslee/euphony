@@ -31,3 +31,4 @@
 (constraint (= (f "Excel/Sheet1.xls") "Sheet1.xls"))
 (constraint (= (f "home/user/Sheet1.xls") "Sheet1.xls"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 "/" (+ (str.indexof _arg_0 "/" 0) 1)) 1) (str.len _arg_0)))

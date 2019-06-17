@@ -32,3 +32,4 @@
 (constraint (= (f "premature opt is the root of all evil") "evil"))
 (constraint (= (f "where is life") "life"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (- (str.len _arg_0) 4) 4))

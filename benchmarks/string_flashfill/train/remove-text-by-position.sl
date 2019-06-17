@@ -32,3 +32,4 @@
 (constraint (= (f "c=/users/dave/formulas.xls") "formulas.xls"))
 (constraint (= (f "c=/users/dave/pivot table.xls") "pivot table.xls"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 "/" (str.indexof (str.replace _arg_0 "/" (int.to.str (str.len _arg_0))) "/" 0)) 1) (str.len _arg_0)))

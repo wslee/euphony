@@ -32,3 +32,4 @@
 (constraint (= (f "03/07/2011") "03/2011"))
 (constraint (= (f "05/09/2009") "05/2009"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.replace _arg_0 (str.substr _arg_0 (+ 1 1) (+ (+ 1 1) 1)) ""))

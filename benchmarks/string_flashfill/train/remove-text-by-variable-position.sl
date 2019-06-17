@@ -33,3 +33,4 @@
 (constraint (= (f "model= outback wagon") "outback wagon"))
 (constraint (= (f "fuel economy= 25/33") "25/33"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 " " (str.indexof _arg_0 "=" 0)) 1) (str.len _arg_0)))

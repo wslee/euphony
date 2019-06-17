@@ -32,3 +32,4 @@
 (constraint (= (f "R/S<184,28,16>") "R/S 184 28 16"))
 (constraint (= (f "R/B<255,88,80>") "R/B 255 88 80"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.replace (str.replace (str.replace (str.replace _arg_0 "," " ") "," " ") ">" "") "<" " "))

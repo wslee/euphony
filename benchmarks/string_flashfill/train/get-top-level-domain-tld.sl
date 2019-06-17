@@ -32,3 +32,4 @@
 (constraint (= (f "mail.net") "net"))
 (constraint (= (f "www.amaon.co.uk") "uk"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.replace (str.substr _arg_0 (str.indexof _arg_0 "." (- (- (- (- (str.len _arg_0) 1) 1) 1) 1)) (str.len _arg_0)) "." ""))

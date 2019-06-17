@@ -32,3 +32,4 @@
 (constraint (= (f "<b>0.409<b>") "0.409"))
 (constraint (= (f "<b>0.7268<b>") "0.7268"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr (str.substr (str.substr _arg_0 0 (str.indexof _arg_0 "<" 1)) 1 (str.len _arg_0)) (+ (str.indexof _arg_0 "b" 0) 1) (str.len _arg_0)))

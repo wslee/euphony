@@ -32,3 +32,4 @@
 (constraint (= (f "smith,bobby") "bobby,smith"))
 (constraint (= (f "lennox,aaron") "aaron,lennox"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.++ (str.++ (str.substr _arg_0 (+ (str.indexof _arg_0 "," 0) 1) (+ (- (str.len _arg_0) (str.indexof _arg_0 "," 0)) 1)) ",") (str.substr _arg_0 0 (str.indexof _arg_0 "," 0))))

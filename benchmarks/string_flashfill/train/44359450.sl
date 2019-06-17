@@ -32,3 +32,4 @@
 (constraint (= (f "44372-33-3223 TYYTE CAP BOX 1550 244 BOX PPSSA223 PAX") "PAX"))
 (constraint (= (f "PRECISE 77 CLEAR BLUE 99WIE BOX 4403 PAX SSKA") "BOX 4403 PAX SSKA"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 " " (str.indexof _arg_0 "_" 0)) 1) (str.len _arg_0)))

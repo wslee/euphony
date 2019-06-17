@@ -31,3 +31,4 @@
 (constraint (= (f "ABCDE/FGHI/JKL/MNOPQR") "MNOPQR"))
 (constraint (= (f "ABCDE/FGHI/JKL") "JKL"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 "/" (str.to.int (str.++ (int.to.str (str.len " ")) (int.to.str 1)))) 1) (str.len _arg_0)))

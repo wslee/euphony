@@ -32,3 +32,4 @@
 (constraint (= (f "Jones <57>") 57))
 (constraint (= (f "Jones <55>") 55))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) Int (str.to.int (str.substr (str.substr _arg_0 (str.indexof _arg_0 "<" 1) (+ 1 (+ 1 1))) 1 (str.len _arg_0))))

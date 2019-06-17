@@ -32,3 +32,4 @@
 (constraint (= (f 1002) "1002"))
 (constraint (= (f 743) "743"))
 (check-synth)
+(define-fun f1 ((_arg_0 Int)) String (int.to.str _arg_0))

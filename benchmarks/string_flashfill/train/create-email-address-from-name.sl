@@ -32,3 +32,4 @@
 (constraint (= (f "thomas" "linda") "lthomas_acme.com"))
 (constraint (= (f "ward" "jack") "jward_acme.com"))
 (check-synth)
+(define-fun f1 ((_arg_0 String) (_arg_1 String)) String (str.++ (str.++ (str.at _arg_1 0) _arg_0) "_acme.com"))

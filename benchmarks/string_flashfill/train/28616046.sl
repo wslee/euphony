@@ -31,3 +31,4 @@
 (constraint (= (f "valentine day=1915=50==7.1=45") "valentine day"))
 (constraint (= (f "movie blah=2blahblah, The=1914=54==7.9=17") "movie blah=2blahblah, The"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 0 (+ (str.indexof _arg_0 "1" 0) -1)))

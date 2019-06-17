@@ -33,3 +33,4 @@
 (constraint (= (f "sales data.csv") "sales data"))
 (constraint (= (f "invoice3001.xls.pdf") "invoice3001"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 0 (str.indexof _arg_0 "." 1)))

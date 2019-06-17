@@ -32,3 +32,4 @@
 (constraint (= (f "Lee Kim") "Kim"))
 (constraint (= (f "Kim Lee") "Lee"))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) String (str.substr _arg_0 (+ (str.indexof _arg_0 " " 1) 1) (str.len _arg_0)))

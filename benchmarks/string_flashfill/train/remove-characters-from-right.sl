@@ -33,3 +33,4 @@
 (constraint (= (f "1221 miles") 1221))
 (constraint (= (f "790 miles") 790))
 (check-synth)
+(define-fun f1 ((_arg_0 String)) Int (str.to.int (str.substr _arg_0 0 (str.indexof _arg_0 " " 1))))
