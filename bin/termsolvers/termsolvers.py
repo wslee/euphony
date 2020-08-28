@@ -248,7 +248,7 @@ class EnumerativeTermSolverBase(TermSolverInterface):
             if sig.is_full():
                 self.one_full_signature = True
                 # print statistics when using PHOG
-                if options.use_phog(): self.stat_model.print_statistics()
+                if options.use_phog() and self.stat_model is not None: self.stat_model.print_statistics()
 
         return True
 

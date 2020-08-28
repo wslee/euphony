@@ -368,10 +368,16 @@ class BVInstantiator(semantics_types.InstantiatorBase):
                 self.instances[(function_name, bv_size)] = BVShl(bv_size)
             elif function_name == 'bvule':
                 self.instances[(function_name, bv_size)] = BVUle(bv_size)
+            elif function_name == 'bvult':
+                self.instances[(function_name, bv_size)] = BVUlt(bv_size)
+            elif function_name == 'bvugt':
+                self.instances[(function_name, bv_size)] = BVUgt(bv_size)
             elif function_name == 'bvsge':
                 self.instances[(function_name, bv_size)] = BVSge(bv_size)
             elif function_name == 'bvsle':
                 self.instances[(function_name, bv_size)] = BVSle(bv_size)
+            elif function_name == 'bvslt':
+                self.instances[(function_name, bv_size)] = BVSlt(bv_size)
             elif function_name == 'bvneg':
                 self.instances[(function_name, bv_size)] = BVNeg(bv_size)
             elif function_name == 'bvmul':
@@ -412,7 +418,11 @@ class BVInstantiator(semantics_types.InstantiatorBase):
                 'bvshl',
                 'bvule',
                 'bvsge',
-                'bvsle' ]
+                'bvsle' ,
+                'bvslt',
+                'bvult',
+                'bvugt',
+                ]
 
     def _do_instantiation(self, function_name, mangled_name, arg_types):
         if self.is_unary(function_name):
