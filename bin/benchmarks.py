@@ -384,6 +384,7 @@ def classic_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, ver
         verifier,
         verify_term_solve=False
     )
+    print(solver.points);
     try:
         solution = next(solutions)
     except StopIteration:
@@ -409,6 +410,7 @@ def memoryless_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, 
     term_solver.stopping_condition = termsolvers.StoppingCondition.one_term_sufficiency
     unifier = unifiers.NullUnifier(None, term_solver, synth_funs, syn_ctx, specification)
 
+    print(syn_ctx)
     solver = solvers.Solver(syn_ctx)
     solutions = solver.solve(
             generator_factory,
@@ -467,7 +469,6 @@ def make_solver(file_sexp, phog_file, rcfg_file):
             ) = benchmark_tuple
     assert len(theories) == 1
     theory = theories[0]
-
     solvers = [ ("LIA Unification", lia_unification_solver),
                 ("STD Unification", std_unification_solver),
                 ("Classic Esolver", classic_esolver),
@@ -521,7 +522,7 @@ def make_solver(file_sexp, phog_file, rcfg_file):
 
     for solver_name, solver in solvers:
         try:
-            #print("Trying solver:", solver_name)
+            print("Trying solver:", solver_name)
             final_solutions = solver(*solver_args)
             if final_solutions == "NO SOLUTION":
                 print("(fail)")

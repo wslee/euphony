@@ -116,7 +116,8 @@ def get_func_exprs_grammars(benchmark_files):
             uf_instantiator,
             synth_instantiator)
         syn_ctx.set_macro_instantiator(macro_instantiator)
-
+        # print("SYN CTX")
+        # print(syn_ctx.variables_map)
         # collect grammars
         synth_funs_data, _ = parser.filter_sexp_for('synth-fun', file_sexp)
         if len(synth_funs_data) == 0:
@@ -1065,8 +1066,11 @@ if __name__ == "__main__":
         term_exprs_wo_dup = sorted(list(set(term_exprs)))
         pred_exprs_wo_dup = sorted(list(set(pred_exprs)))
         print('Collected term exprs for training (w/o duplication) : ', len(term_exprs_wo_dup))
+        # print("--")
         # for expr in term_exprs_wo_dup:
         #     print(expr)
+        # print("--")
+
         print('Collected pred exprs for training (w/o duplication) : ', len(pred_exprs_wo_dup))
         # for expr in pred_exprs_wo_dup:
         #     print(expr)

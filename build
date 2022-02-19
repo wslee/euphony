@@ -11,7 +11,7 @@ cd ..
 
 # Build python3
 tar -xf Python-3.5.1.tgz
-cd Python-3.5.1 && ./configure && make -j 8 && cp python python3 && cd ..
+cd Python-3.5.1 && ./configure && make -j 8 && cp python.exe python3 && cd ..
 
 # Build z3
 cd z3
