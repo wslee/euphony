@@ -368,6 +368,7 @@ def classic_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, ver
     # init for using PHOG
     phog = SPhog(grammar, phog_file, synth_funs[0].range_type, specification) if options.use_sphog() else \
         Phog(grammar, phog_file, synth_funs[0].range_type)
+    print(phog.stat_map) # !!!
     if phog.stat_map is None:
         print('No model available for this problem. We use the classic ESolver ...')
         phog = None

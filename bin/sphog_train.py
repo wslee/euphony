@@ -95,13 +95,78 @@ def get_func_exprs_grammars(benchmark_files):
 
     for benchmark_file in benchmark_files:
         print('Loading : ', benchmark_file)
-        file_sexp = parser.sexpFromFile(benchmark_file)
+        file_sexp = parser.sexpFromFile(benchmark_file) # this is basically a parse of the entire file
+        '''
+        basically like this (for 11440431.sl)
+            [
+                ['set-logic', 'SLIA'],
+                ['synth-fun', 'f', [['_arg_0', 'String']], 'String', 
+                    [
+                        ['Start', 'String', ['ntString']], 
+                        ['ntString', 'String', 
+                            [
+                                '_arg_0', 
+                                ('String', ''), 
+                                ('String', ' '), 
+                                ('String', 'US'), 
+                                ('String', 'CAN'), 
+                                ['str.++', 'ntString', 'ntString'], 
+                                ['str.replace', 'ntString', 'ntString', 'ntString'], 
+                                ['str.at', 'ntString', 'ntInt'], 
+                                ['int.to.str', 'ntInt'], 
+                                ['ite', 'ntBool', 'ntString', 'ntString'], 
+                                ['str.substr', 'ntString', 'ntInt', 'ntInt']
+                            ]
+                        ], 
+                        ['ntInt', 'Int', 
+                            [
+                                ('Int', 1), 
+                                ('Int', 0), 
+                                ('Int', -1), 
+                                ['+', 'ntInt', 'ntInt'], 
+                                ['-', 'ntInt', 'ntInt'], 
+                                ['str.len', 'ntString'], 
+                                ['str.to.int', 'ntString'], 
+                                ['ite', 'ntBool', 'ntInt', 'ntInt'], 
+                                ['str.indexof', 'ntString', 'ntString', 'ntInt']
+                            ]
+                        ], 
+                        ['ntBool', 'Bool', 
+                            [
+                                ('Bool', 'true'), 
+                                ('Bool', 'false'), 
+                                ['=', 'ntInt', 'ntInt'], 
+                                ['str.prefixof', 'ntString', 'ntString'], 
+                                ['str.suffixof', 'ntString', 'ntString'], 
+                                ['str.contains', 'ntString', 'ntString']
+                            ]
+                        ]
+                    ]
+                ], 
+                ['constraint', ['=', ['f', ('String', 'Mining US')], ('String', 'Mining')]], 
+                ['constraint', ['=', ['f', ('String', 'Soybean Farming CAN')], ('String', 'Soybean Farming')]], 
+                ['constraint', ['=', ['f', ('String', 'Soybean Farming')], ('String', 'Soybean Farming')]], 
+                ['constraint', ['=', ['f', ('String', 'Oil Extraction US')], ('String', 'Oil Extraction')]], 
+                ['constraint', ['=', ['f', ('String', 'Fishing')], ('String', 'Fishing')]], 
+                ['check-synth'], 
+                ['define-fun', 'f_1', [['_arg_0', 'String']], 'String', ['str.replace', ['str.replace', '_arg_0', ('String', 'CAN'), ('String', 'US')], ['str.++', ('String', ' '), ('String', 'US')], ('String', '')]]
+            ]
+        so basically it contains I guess like the vocab (is this also the grammar?) and the input-output examples and a solution
+        '''
         if file_sexp is None:
             continue
 
         ## specification
-        specification = get_specification(file_sexp)
-        all_vocabs.update(basic_vocabs_for_spec(specification))
+        specification = get_specification(file_sexp) # comes from benchmarks.py I think; there's something messed up with the path but whatever yolo
+        # print(specification) # for this file at least, this is a PBESpec object
+        # # which is in specifications.py as well ofc
+        # print(specification.synth_fun) # SynthFunction object
+        # print(specification.eval_ctx) # EvaluationContext object
+        # print(specification.theory) # SLIA
+        # print(specification.synth_fun_expr) # a FunctionExpression
+
+        all_vocabs.update(basic_vocabs_for_spec(specification)) # this doesn't seem particularly sophisticated lmfao just C_i for i from 0 to 7 exclusive, _, and Var
+        # {'C_4', 'Var', 'C_5', 'C_6', 'C_1', 'C_0', '_', 'C_3', 'C_2'} for the first file at least
 
         core_instantiator = semantics_core.CoreInstantiator()
         theory_instantiators = [parser.get_theory_instantiator(theory) for theory in parser._known_theories]
@@ -142,6 +207,9 @@ def get_func_exprs_grammars(benchmark_files):
                 fetchop_func = get_fetchop_func(specification, grammar)
                 all_vocabs.update(get_vocabs_from_grammar(grammar, fetchop_func))
 
+        # print(all_vocabs) # at this point, the vocab has a bunch more crap in it
+        # {'C_6', '_', 'str.to.int', '=', 'C_1', 'C_0', 'C_5', 'str.contains', 'str.prefixof', 'ite', '-1', 'true', '1', '-', 'Var', 'str.replace', 'str.++', '+', 'C_4', 'str.at', 'str.substr', 'C_2', 'false', 'str.len', 'int.to.str', 'str.suffixof', '0', 'str.indexof', 'C_3'}
+
         defs, _ = parser.filter_sexp_for('define-fun', file_sexp)
         if defs is None: defs = []
         if len(defs) > 0:
@@ -152,7 +220,7 @@ def get_func_exprs_grammars(benchmark_files):
                     ((arg_vars, arg_types, arg_var_map), return_type) = parser._process_function_defintion(args_data,
                                                                                                            ret_type_data)
                     # category flag
-                    flag = (return_type, eusolver, spec_flag)
+                    flag = (return_type, eusolver, spec_flag) # (StringType, False, (<PBESpecKind.SOME_INPUT_BELONG_TO_OUTPUT: 0>, <PBESpecKind.SOME_OUTPUT_BELONG_TO_INPUT: 1>, <PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>))
 
                     expr = parser.sexp_to_expr(interpretation, syn_ctx, arg_var_map)
                     macro_func = semantics_types.MacroFunction(name, len(arg_vars), tuple(arg_types), return_type, expr,
@@ -180,7 +248,70 @@ def get_func_exprs_grammars(benchmark_files):
                         exprs_per_category[flag] = set([])
                     exprs_per_category[flag].add((expr, fetchop_func))
 
-
+    '''
+    exprs_per_category for 11440431.sl looks like this:
+    { <1 flag since it's just 1 function>: () }
+    {
+        (StringType, False, (<PBESpecKind.SOME_INPUT_BELONG_TO_OUTPUT: 0>, 
+                             <PBESpecKind.SOME_OUTPUT_BELONG_TO_INPUT: 1>, 
+                             <PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>)
+        ): {
+            (
+                FunctionExpression(
+                    expr_kind=<ExpressionKinds.function_expression: 4>, 
+                    function_info=<semantics.semantics_slia.StrReplace object at 0x7f224936bc88>, 
+                    children=(
+                        FunctionExpression(
+                            expr_kind=<ExpressionKinds.function_expression: 4>, 
+                            function_info=<semantics.semantics_slia.StrReplace object at 0x7f224936bc88>, 
+                            children=(
+                                FormalParameterExpression(
+                                    expr_kind=<ExpressionKinds.formal_parameter_expression: 2>, 
+                                    unknown_function_info=None, 
+                                    parameter_type=StringType, parameter_position=0,
+                                    expr_id=None
+                                ), 
+                                ConstantExpression(
+                                    expr_kind=<ExpressionKinds.constant_expression: 3>, 
+                                    value_object=Value(value_object='CAN', value_type=StringType),
+                                    expr_id=None
+                                ), 
+                                ConstantExpression(
+                                    expr_kind=<ExpressionKinds.constant_expression: 3>,
+                                    value_object=Value(value_object='US', value_type=StringType),
+                                    expr_id=None)
+                                ), 
+                            expr_id=None
+                        ), 
+                        FunctionExpression(
+                            expr_kind=<ExpressionKinds.function_expression: 4>, 
+                            function_info=<semantics.semantics_slia.StrConcat object at 0x7f224936b710>, 
+                            children=(
+                                ConstantExpression(
+                                    expr_kind=<ExpressionKinds.constant_expression: 3>, 
+                                    value_object=Value(value_object=' ', value_type=StringType), expr_id=None
+                                ), 
+                                ConstantExpression(
+                                    expr_kind=<ExpressionKinds.constant_expression: 3>, 
+                                    value_object=Value(value_object='US', value_type=StringType), 
+                                    expr_id=None
+                                )
+                            ), 
+                            expr_id=None
+                        ), 
+                        ConstantExpression(
+                            expr_kind=<ExpressionKinds.constant_expression: 3>, 
+                            value_object=Value(value_object='', value_type=StringType), 
+                            expr_id=None
+                        )
+                    ), 
+                    expr_id=None
+                    ), 
+                <function get_fetchop_func.<locals>.fetchop_func at 0x7f22493742f0>
+            )
+        }
+    }
+    '''
 
     return exprs_per_category, all_vocabs
 
@@ -197,6 +328,20 @@ def prog_to_str(prog):
 
 def get_data_expr(expr, prog):
     global exprs_info
+
+    # print(expr)
+    # token_list = expr.replace('(', '').replace(')', '').split(' ')
+    # for i,token in enumerate(token_list):
+    #     if token[0] == '"':
+    #         token_list[i] = 'C_5'
+    #     elif token == '_arg_0' or token == '_arg_1': 
+    #         token_list[i] = 'Var'
+    
+    # res = []
+    # for i in range(len(token_list) - 2):
+    #     res.append((token_list[i]+','+token_list[i+1], token_list[i+2]))
+
+    # return res
 
     (expr2history, expr2cache) = exprs_info
     assert (expr in expr2history and expr in expr2cache)
@@ -241,6 +386,8 @@ def get_data_exprs(exprs, prog):
     for expr in exprs:
         data = get_data_expr(expr, prog)
         result = result + data
+    # print(result)
+
     return result
 
 
@@ -1029,7 +1176,7 @@ if __name__ == "__main__":
 
     print('# of vocabs : ', len(all_vocabs))
     print([vocab for vocab in all_vocabs])
-    get_mle.all_vocabs = all_vocabs
+    get_mle.all_vocabs = all_vocabs # idk what's happening here tbh
 
     # setting maximum number of writes
     all_vocabs = get_mle.all_vocabs
@@ -1038,6 +1185,21 @@ if __name__ == "__main__":
 
     # for eusolver
     rettype2mle = {}
+
+    # for ret_type_eusolver, fun_exprs in exprs_per_category.items():
+    #         (ret_type, eusolver, spec_kind) = ret_type_eusolver
+    #         key = (str(ret_type), eusolver, spec_kind)
+    #         print('Specification kind : ', spec_kind)
+    '''
+    e.g.
+    Specification kind :  (<PBESpecKind.NO_INTERSECTION: 7>,)
+    Specification kind :  (<PBESpecKind.SOME_INPUT_BELONG_TO_OUTPUT: 0>, <PBESpecKind.SOME_OUTPUT_BELONG_TO_INPUT: 1>, <PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>)
+    Specification kind :  (<PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>,)
+    Specification kind :  (<PBESpecKind.NO_INTERSECTION: 7>,)
+    Specification kind :  (<PBESpecKind.SOME_OUTPUT_BELONG_TO_INPUT: 1>, <PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>)
+    Specification kind :  (<PBESpecKind.SOME_INPUT_BELONG_TO_OUTPUT: 0>, <PBESpecKind.SOME_INPUT_INTERSECT_OUTPUT: 4>)
+    Specification kind :  (<PBESpecKind.NO_INTERSECTION: 7>,)
+    '''
 
     for ret_type_eusolver, fun_exprs in exprs_per_category.items():
         (ret_type, eusolver, spec_kind) = ret_type_eusolver
@@ -1075,6 +1237,9 @@ if __name__ == "__main__":
         # for expr in pred_exprs_wo_dup:
         #     print(expr)
 
+        # this is probably where we should add n-gram stuff
+        # how do you do n-gram probabilities though? is it purely based off of frequency counts -> distribution?
+
         print('learn PHOG for term exprs')
         if len(term_exprs) == 0:
             term_prog = None
@@ -1084,13 +1249,113 @@ if __name__ == "__main__":
             #     lambda_penalize = lambda_selector(term_exprs)
             # else:
             lambda_penalize = args.lambda_penalize
+
             if pcfg:
                 term_prog = [Tcond.WRITE_VALUE]
             else:
                 term_prog = train_model(term_exprs, lambda_penalize)
+            # print()
+            # print(term_exprs) # a bunch of terms basically; they seem to be space-separated tokens for the most part, but there are parentheses which make the notion of n-grams a bit more confusing to me
+            print(prog_to_str(term_prog)) # this is "3 6 0 6 (4.82)" for the first iteration... what does this mean???
 
-            print(prog_to_str(term_prog))
+            # print(get_data_exprs(term_exprs, term_prog))           
+
             term_mle = get_mle(term_prog, term_exprs, training=False)
+
+            '''
+            term_exprs:
+            e.g.
+            [
+                '(str.contains _arg_0 _arg_1)', 
+                '(str.prefixof _arg_1 _arg_0)', 
+                '(str.contains _arg_0 _arg_1)', 
+                '(str.contains _arg_0 _arg_2)', 
+                '(str.contains (str.++ (str.++ (str.++ "pink" "blue") "orange") "yellow") _arg_0)', 
+                '(str.prefixof _arg_1 _arg_0)', 
+                '(str.suffixof _arg_1 _arg_0)', 
+                '(str.contains _arg_0 _arg_3)', 
+                '(= (str.indexof _arg_0 "overhead" 0) -1)', 
+                '(str.contains (str.replace _arg_0 "2" "1") "1")', 
+                '(str.contains _arg_0 "9999999")'
+            ]
+            '''
+            #print(get_data_exprs(term_exprs, term_prog))
+            '''
+            [
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'Var'), 
+                ('Var,str.contains', 'Var'), 
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'Var'), 
+                ('Var,str.contains', 'C_5'), 
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'str.++'), 
+                ('_,str.++', 'str.++'), 
+                ('_,str.++', 'str.++'), 
+                ('_,str.++', 'C_5'), 
+                ('C_5,str.++', 'C_5'), 
+                ('str.++,str.++', 'C_5'), 
+                ('str.++,str.++', 'C_5'), 
+                ('str.++,str.contains', 'Var'), 
+                ('_,_', 'str.prefixof'),
+                ('_,str.prefixof', 'Var'), 
+                ('Var,str.prefixof', 'Var'), 
+                ('_,_', '='), 
+                ('_,=', 'str.indexof'), 
+                ('_,str.indexof', 'Var'), 
+                ('Var,str.indexof', 'C_5'), 
+                ('C_5,str.indexof', '0'), 
+                ('str.indexof,=', '-1'), # (left sibling, parent, self), _ is null
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'Var'), 
+                ('Var,str.contains', 'Var'), 
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'str.replace'), 
+                ('_,str.replace', 'Var'), 
+                ('Var,str.replace', 'C_5'), 
+                ('C_5,str.replace', 'C_5'), 
+                ('str.replace,str.contains', 'C_5'), 
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'Var'), 
+                ('Var,str.contains', 'Var'), 
+                ('_,_', 'str.suffixof'), 
+                ('_,str.suffixof', 'Var'), 
+                ('Var,str.suffixof', 'Var'), 
+                ('_,_', 'str.prefixof'), 
+                ('_,str.prefixof', 'Var'), 
+                ('Var,str.prefixof', 'Var'), 
+                ('_,_', 'str.contains'), 
+                ('_,str.contains', 'Var'), 
+                ('Var,str.contains', 'Var')
+            ]
+            '''
+            # so how do you go from 3 6 0 6 (4.82) to this monstrosity below???
+            '''
+            e.g.
+            {
+                'Var,str.contains': {'C_5': 0.2, 'Var': 0.8}, 
+                'Var,str.replace': {'C_5': 1.0}, 
+                'Var,str.suffixof': {'Var': 1.0}, 
+                'C_5,str.++': {'C_5': 1.0}, 
+                'Var,str.prefixof': {'Var': 1.0}, 
+                '_,str.suffixof': {'Var': 1.0}, 
+                '_,str.prefixof': {'Var': 1.0}, 
+                '_,str.++': {'C_5': 0.3333333333333333, 'str.++': 0.6666666666666666}, 
+                '_,str.indexof': {'Var': 1.0}, 
+                'str.++,str.++': {'C_5': 1.0}, 
+                '_,=': {'str.indexof': 1.0}, 
+                'C_5,str.indexof': {'0': 1.0}, 
+                'Var,str.indexof': {'C_5': 1.0}, 
+                '_,str.replace': {'Var': 1.0}, 
+                'str.++,str.contains': {'Var': 1.0}, 
+                'str.indexof,=': {'-1': 1.0}, 
+                'str.replace,str.contains': {'C_5': 1.0}, 
+                'C_5,str.replace': {'C_5': 1.0}, 
+                '_,_': {'str.contains': 0.6363636363636364, 'str.prefixof': 0.18181818181818182, 'str.suffixof': 0.09090909090909091, '=': 0.09090909090909091}, 
+                '_,str.contains': {'Var': 0.7142857142857143, 'str.++': 0.14285714285714285, 'str.replace': 0.14285714285714285}
+            }
+            '''
+
             # print probabilities of training data
             # for term_expr in term_exprs:
             #     print('%s : %.2f' % (term_expr, compute_score_with_cache(term_mle, term_prog, term_expr)))
