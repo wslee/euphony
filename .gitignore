@@ -1,2 +1,3 @@
 euphony-out/*
 thirdparty/*
+*.pyc

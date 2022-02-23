@@ -1,0 +1,25 @@
+converting training examples into pivot grammar space
+===
+fetchop_func does the converting at the vocab level in get_func_exprs_grammars()
+
+C_i -> i stands for which category of value it is e.g. is it in both the input and the output, etc.
+get_constant_category()
+-> ConstAbstr
+
+get_exprs_info(): they seem to prepopulate a cache w/ the mappings
+
+(str.replace (str.replace _arg_0 "CAN" "US") (str.++ " ")) (1, 0) C_3 C_3
+    C_3 is both input and output
+(str.replace (str.replace _arg_0 "CAN" "US") (str.++ " ")) (1, 0) C_5 C_5
+(str.replace (str.replace _arg_0 "CAN" "US") (str.++ " " "US")) (1, 1) C_5 C_5
+    C_5 is input only not output
+
+...
+
+status update end of tuesday session:
+we got some probability values for our trigrams
+but now we need to feed them into the synthesizer
+the problem is that the file format and function signatures expect a term prog / pred prog
+NB: we're also only generating a term ngrams probs rn but its fine
+so either we somehow use the sphog_train prog with our probabilities
+or we write our own code to hook into the solvers directly
