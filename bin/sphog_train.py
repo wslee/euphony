@@ -1386,6 +1386,10 @@ if __name__ == "__main__":
         remove_zero_probs(pred_mle)
 
         # store the mles for dumping
+        print(pred_prog)
+        print("--");
+        print(pred_mle)
+
         rettype2mle[key] = ((term_prog, term_mle), (pred_prog, pred_mle))
 
     # if text_out:

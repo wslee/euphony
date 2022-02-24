@@ -141,7 +141,7 @@ if __name__ == "__main__":
         for expr, fetchop_func in term_exprs:
             #expr is pre string conversion with child info
             expr_string = exprs.expression_to_string(expr)
-            print(expr_string)
+            # print(expr_string)
             # print(fetchop_func.cache)
             # print()
             token_list = expr_string.replace('(', '').replace(')', '').split(' ')
@@ -160,7 +160,27 @@ if __name__ == "__main__":
 
             for i in range(len(mapped_tokens) - 2):
                 ngrams.append((mapped_tokens[i]+','+mapped_tokens[i+1], mapped_tokens[i+2]))
-    
+        
+        term_prog = [Tcond.WRITE_VALUE]
+        # ngram_freqs = defaultdict(list)
+        # ngram_probs = defaultdict(dict)
+        ngram_freqs = defaultdict(list)
+        ngram_probs = defaultdict(dict)
+        for context, token in ngrams:
+            ngram_freqs[context].append(token)
+        
+        for context in ngram_freqs.keys():
+            c = Counter(ngram_freqs[context])
+            for token in ngram_freqs[context]:
+                ngram_probs[context][token] = (c[token]/len(ngram_freqs[context]))
+
+        remove_zero_probs(ngram_probs)
+
+
+
+
+        rettype2mle[key] = ((term_prog, dict(ngram_probs)), (None, None))
+
     # print(ngrams)
     # want it to look like 
     '''
@@ -175,19 +195,8 @@ if __name__ == "__main__":
 
     # from here, we need to get the actual probabilities
     # my understanding is that we just go through ngrams and build a frequency count
-    ngram_freqs = defaultdict(list)
-    ngram_probs = defaultdict(dict)
-    for context, token in ngrams:
-        ngram_freqs[context].append(token)
     
-    for context in ngram_freqs.keys():
-        c = Counter(ngram_freqs[context])
-        for token in ngram_freqs[context]:
-            ngram_probs[context][token] = (c[token]/len(ngram_freqs[context]))
-
-    remove_zero_probs(ngram_probs)
-
-    print(ngram_probs)
+    # print(ngram_probs)
 
     # term_exprs = [exprs.expression_to_string(e) for e, f in term_exprs]
     # lambda_penalize = args.lambda_penalize
