@@ -57,13 +57,14 @@ def run_solver(args, f, solver="euphony"):
     cmd = '(ulimit -v ' + str(memory_in_kb) + '; timeout ' + str(args.timeout) + ' ./bin/run_' + args.cmd
     if solver == "eusolver":
         cmd += "_eusolver"
-    elif args.strategy is not "":
+    elif args.strategy != "": # is not vs !=
         cmd += "_" + args.strategy
 
     cmd += ' benchmarks/' + args.cmd + '/test/' + f + ')'
     start_time = time.time()
     output = subprocess.getoutput(cmd)
-    if output is "":
+    print(output) # it's weird that this code doesn't actually write the synthesized code out to a file
+    if output == "": # is vs ==
         iters = ""
         output = ""
     else:
@@ -107,10 +108,10 @@ def print_header(args):
 def run(args, logger):
     os.makedirs('euphony-out/' + args.cmd, 0o755, True)
     inputs = [ f for f in os.listdir('benchmarks/' + args.cmd + '/test') \
-               if f.endswith('.sl')]
-    inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ] 
+               if f.endswith('.sl')][0:20]
+    inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ]
     inputs = sorted(inputs)
-
+    print(inputs)
     print_header(args)
     for f in inputs:
         elapsed_time_euphony = run_solver(args, f)
