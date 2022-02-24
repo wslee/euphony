@@ -372,7 +372,6 @@ def classic_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, ver
     if phog.stat_map is None:
         print('No model available for this problem. We use the classic ESolver ...')
         phog = None
-
     term_solver = TermSolver(specification.term_signature, term_generator, stat_model=phog)
     term_solver.stopping_condition = termsolvers.StoppingCondition.one_term_sufficiency
     unifier = unifiers.NullUnifier(None, term_solver, synth_funs, syn_ctx, specification)
@@ -385,7 +384,7 @@ def classic_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, ver
         verifier,
         verify_term_solve=False
     )
-    print(solver.points);
+    print(solver.points)
     try:
         solution = next(solutions)
     except StopIteration:

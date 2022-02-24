@@ -84,7 +84,6 @@ class Solver(object):
         # spec = syn_ctx.get_specification()
 
         time_origin = time.clock()
-
         while (True):
             # print('________________')
             # iterate until we have terms that are "sufficient"

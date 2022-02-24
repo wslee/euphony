@@ -117,6 +117,7 @@ class TermSolverInterface(object):
 
 
     def _default_compute_term_signature(self, term, old_signature=None):
+        print(exprs.expression_to_string(term))
         points = self.points
         # num_points = len(points)
 
