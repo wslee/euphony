@@ -328,6 +328,7 @@ class SPhog:
 
 
     def generate(self, compute_term_signature, points):
+        print("generating")
         grammar = self.grammar
         m = self.m
         m_sens = self.m_sens
@@ -367,6 +368,7 @@ class SPhog:
 
         # start symbol
         start = grammars.NTRewrite(grammar.start, grammar.nt_type[grammar.start])
+        print(start)
 
         # init for start symbol
         start_str = str(start)
@@ -408,6 +410,9 @@ class SPhog:
                 assert (len(nts_addrs) > 0)
                 _, ctxt = get_ctxt(self.fetchop_func, current_expr, nts_addrs[0], instrs, {tuple(addr) for addr in nts_addrs[1:]})
                 cond = ','.join(ctxt)
+                # print("context:", cond, "current expr:", exprs.expression_to_string(current_expr))
+                # observation: get_ctxt is broken for our ngrams
+                # for ngrams and pcfg, the context is basically null (or "_")
 
                 # one step left-most expansion
                 for rule, next_rewrite, generated_nts_addrs in grammar.one_step_expand(current, nts_addrs[0]):

@@ -117,7 +117,8 @@ if __name__ == "__main__":
     rettype2mle = {}
 
     # bechmark_file format : original benchmark_file + its solution
-    exprs_per_category, all_vocabs = get_func_exprs_grammars(benchmark_files)
+    exprs_per_category, all_vocabs = get_func_exprs_grammars(benchmark_files[0:1]) # let's try to do a singleton
+    print(benchmark_files[0:1])
 
     print('# of vocabs : ', len(all_vocabs))
     print([vocab for vocab in all_vocabs])
@@ -177,7 +178,7 @@ if __name__ == "__main__":
         remove_zero_probs(ngram_probs)
 
 
-
+        print(ngram_probs)
 
         rettype2mle[key] = ((term_prog, dict(ngram_probs)), (None, None))
 

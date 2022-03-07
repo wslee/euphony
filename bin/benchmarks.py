@@ -361,6 +361,7 @@ def classic_esolver(theory, syn_ctx, synth_funs, grammar_map, specification, ver
         generator_factory = enumerators.PointDistinctGeneratorFactory(specification)
     except:
         raise UnsuitableSolverException("Enumerator problems")
+
     TermSolver = termsolvers.PointDistinctTermSolver
     grammar = grammar_map[synth_funs[0]]
     term_generator = grammar.to_generator(generator_factory)
