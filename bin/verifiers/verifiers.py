@@ -348,8 +348,8 @@ class PBEVerifier(VerifierBase):
         self.eval_ctx = self.spec.eval_ctx 
 
     def _verify_expr(self, term):
-        print("verify term")
-        print(exprs.expression_to_string(term))
+        # print("verify term")
+        # print(exprs.expression_to_string(term))
         eval_ctx = self.eval_ctx
         for point, value in self.valuations.items():
             eval_ctx.set_valuation_map(point)

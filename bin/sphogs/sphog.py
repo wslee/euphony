@@ -328,7 +328,7 @@ class SPhog:
 
 
     def generate(self, compute_term_signature, points):
-        print("generating")
+        # print("generating")
         grammar = self.grammar
         m = self.m
         m_sens = self.m_sens
@@ -368,7 +368,7 @@ class SPhog:
 
         # start symbol
         start = grammars.NTRewrite(grammar.start, grammar.nt_type[grammar.start])
-        print(start)
+        # print(start)
 
         # init for start symbol
         start_str = str(start)

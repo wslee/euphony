@@ -55,6 +55,7 @@ def count_example(args, f):
 def run_solver(args, f, solver="euphony"):
     memory_in_kb = args.memory * 1024 * 1024
     cmd = '(ulimit -v ' + str(memory_in_kb) + '; timeout ' + str(args.timeout) + ' ./bin/run_' + args.cmd
+    if args.ngram: cmd = cmd + "_ngram" 
     if solver == "eusolver":
         cmd += "_eusolver"
     elif args.strategy != "": # is not vs !=
@@ -63,7 +64,7 @@ def run_solver(args, f, solver="euphony"):
     cmd += ' benchmarks/' + args.cmd + '/test/' + f + ')'
     start_time = time.time()
     output = subprocess.getoutput(cmd)
-    print(output) # it's weird that this code doesn't actually write the synthesized code out to a file
+    # print(output) # it's weird that this code doesn't actually write the synthesized code out to a file
     if output == "": # is vs ==
         iters = ""
         output = ""
@@ -111,7 +112,7 @@ def run(args, logger):
                if f.endswith('.sl')][0:20]
     inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ]
     inputs = sorted(inputs)
-    print(inputs)
+    # print(inputs)
     print_header(args)
     for f in inputs:
         elapsed_time_euphony = run_solver(args, f)
@@ -135,22 +136,27 @@ def parse_args():
     subparser.add_argument("--timeout", type = int, default = 3600)
     subparser.add_argument("--memory", type = int, default = 16)
     subparser.add_argument("--strategy", type = str, default = "")
+    subparser.add_argument("--ngram", type = bool, default = False)
     subparser.add_argument("--only_euphony", action="store_true", default = False)
     subparser = subparsers.add_parser("string_flashfill", help="Run the String Benchmark Programs (used for comparison to FlashFill)")
     subparser.add_argument("--timeout", type = int, default = 600)
     subparser.add_argument("--memory", type = int, default = 16)
     subparser.add_argument("--strategy", type = str, default = "")
+    subparser.add_argument("--ngram", type = bool, default = False)
     subparser.add_argument("--only_euphony", action="store_true", default = True)
     subparser = subparsers.add_parser("bitvec", help="Run the Bitvec Benchmark Programs")
     subparser.add_argument("--timeout", type = int, default = 3600)
     subparser.add_argument("--memory", type = int, default = 16)
     subparser.add_argument("--strategy", type = str, default = "")
+    subparser.add_argument("--ngram", type = bool, default = False)
     subparser.add_argument("--only_euphony", action="store_true", default = False)
     subparser = subparsers.add_parser("circuit", help="Run the Circuit Benchmark Programs")
     subparser.add_argument("--timeout", type = int, default = 3600)
     subparser.add_argument("--memory", type = int, default = 16)
+    subparser.add_argument("--ngram", type = bool, default = False)
     subparser.add_argument("--strategy", type = str, default = "")
     subparser.add_argument("--only_euphony", action="store_true", default = False)
+
     return parser.parse_args()
 
 def main():

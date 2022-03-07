@@ -8,6 +8,7 @@ from exprs import exprs
 from exprs import exprtypes
 import math
 import heapq
+import shlex
 import functools
 from core import grammars
 from enumerators import enumerators
@@ -117,8 +118,8 @@ if __name__ == "__main__":
     rettype2mle = {}
 
     # bechmark_file format : original benchmark_file + its solution
-    exprs_per_category, all_vocabs = get_func_exprs_grammars(benchmark_files[0:1]) # let's try to do a singleton
-    print(benchmark_files[0:1])
+    exprs_per_category, all_vocabs = get_func_exprs_grammars(benchmark_files)
+    # print(benchmark_files[0:1])
 
     print('# of vocabs : ', len(all_vocabs))
     print([vocab for vocab in all_vocabs])
@@ -145,8 +146,35 @@ if __name__ == "__main__":
             # print(expr_string)
             # print(fetchop_func.cache)
             # print()
-            token_list = expr_string.replace('(', '').replace(')', '').split(' ')
-            # print(fetchop_func.cache[expr_string])
+
+            token_string = expr_string.replace('(', '').replace(')', '');
+            token_list = shlex.split(token_string, posix=False)
+            # print('-')
+            # mapped_tokens = []
+
+            # while ' ' in token_string:
+            #     space_index = token_string.index(' ')
+            #     curr_token = token_string[:space_index]
+                
+            #     if curr_token[0] == '"':
+            #         curr_token =  
+                
+            #     token_string = token_string[space_index+1:]
+
+            #     print(curr_token)
+            #     print(token_string)
+            #     print('---')
+            #     if curr_token in fetchop_func.cache:
+            #         mapped_tokens.append(fetchop_func.cache[curr_token])
+            #     else:
+            #         mapped_tokens.append(curr_token)
+            
+            # if token_string in fetchop_func.cache:
+            #     mapped_tokens.append(fetchop_func.cache[token_string])
+            # else:
+            #     mapped_tokens.append(token_string)
+            # token_list = expr_string.replace('(', '').replace(')', '').split(' ')
+            # # print(fetchop_func.cache[expr_string])
             mapped_tokens = []
             for token in token_list:
                 if token in fetchop_func.cache:
@@ -178,7 +206,7 @@ if __name__ == "__main__":
         remove_zero_probs(ngram_probs)
 
 
-        print(ngram_probs)
+        # print(ngram_probs)
 
         rettype2mle[key] = ((term_prog, dict(ngram_probs)), (None, None))
 

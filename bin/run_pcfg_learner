@@ -1,0 +1,43 @@
+#!/bin/bash
+# parameter for penalizing complicated tcond programs (for avoiding overfitting)
+lambda_val="1.0"
+# perform stupid backoff? (if not used, overall predictive performance might be worse)
+do_backoff="-do_backoff"
+# alpha value for stupid backoff
+alpha="0.2"
+# perform data sampling? (in case of too many training instances)
+#do_sample=""
+# maximum #. of iteration for the total training
+max_iter="20"
+# maximum #. of iteration for program generator
+max_iter_gen="50"
+# maximum #. of iteration for data sampling
+max_iter_sample="50"
+# gene pool size for finding a good tcond program using genetic programming
+pool_size="20"
+# learn PHOG on a decomposed grammar (for Divide-and-conquer enumeration of EUSolver)?
+#eu="-eu"
+# learn probabilistic context-free grammar 
+pcfg="-pcfg"
+# maximum size of tcond programs
+max_size="50"
+phog_file_name=$1
+training_instances=${@:2}
+PYPATH="$EUPHONY_HOME/thirdparty/Python-3.5.1/python"
+export Z3_LIBRARY_PATH="$EUPHONY_HOME/thirdparty/z3/build/python"
+
+if [ -z "$PYPATH" ]; then
+	echo "python3 not found"
+else
+	PYTHONPATH=$EUPHONY_HOME/thirdparty/libeusolver/build:$EUPHONY_HOME/thirdparty/z3/build/python "$PYPATH" $EUPHONY_HOME/bin/sphog_train.py \
+	-lambda_penalize $lambda_val \
+	-alpha $alpha \
+	-max_iter $max_iter \
+	-max_size $max_size \
+	-max_iter_gen $max_iter_gen \
+	-max_iter_sample $max_iter_sample \
+	-pool_size $pool_size $do_sample $eu $pcfg \
+	-out $phog_file_name \
+	$training_instances
+	
+fi
