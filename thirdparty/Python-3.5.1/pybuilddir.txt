@@ -1,1 +1,1 @@
-build/lib.linux-x86_64-3.5
+build/lib.macosx-10.15-x86_64-3.5

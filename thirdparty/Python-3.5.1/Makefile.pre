@@ -27,29 +27,29 @@ MODLIBS=        _MODLIBS_
 VERSION=	3.5
 srcdir=		.
 
-abs_srcdir=	/mnt/f/UCSD/W22/CSE291_ProgramSynthesis/euphony/thirdparty/Python-3.5.1
-abs_builddir=	/mnt/f/UCSD/W22/CSE291_ProgramSynthesis/euphony/thirdparty/Python-3.5.1
+abs_srcdir=	/Users/patrickbrown/Desktop/291-project/euphony/thirdparty/Python-3.5.1
+abs_builddir=	/Users/patrickbrown/Desktop/291-project/euphony/thirdparty/Python-3.5.1
 
 
-CC=		gcc -pthread
-CXX=		g++ -pthread
+CC=		gcc
+CXX=		g++
 MAINCC=		$(CC)
 LINKCC=		$(PURIFY) $(MAINCC)
 AR=		ar
 RANLIB=		ranlib
-READELF=	readelf
-SOABI=		cpython-35m-x86_64-linux-gnu
+READELF=	:
+SOABI=		cpython-35m-darwin
 LDVERSION=	$(VERSION)$(ABIFLAGS)
 HGVERSION=	
 HGTAG=		
 HGBRANCH=	
-PGO_PROF_GEN_FLAG=-fprofile-generate
-PGO_PROF_USE_FLAG=-fprofile-use -fprofile-correction
-LLVM_PROF_MERGER=true
-LLVM_PROF_FILE=
-LLVM_PROF_ERR=no
+PGO_PROF_GEN_FLAG=-fprofile-instr-generate
+PGO_PROF_USE_FLAG=-fprofile-instr-use=code.profclangd
+LLVM_PROF_MERGER=llvm-profdata merge -output=code.profclangd *.profclangr
+LLVM_PROF_FILE=LLVM_PROFILE_FILE="code-%p.profclangr"
+LLVM_PROF_ERR=yes
 
-GNULD=		yes
+GNULD=		no
 
 # Shell used by make (some versions default to the login shell, which is bad)
 SHELL=		/bin/sh
@@ -58,7 +58,7 @@ SHELL=		/bin/sh
 LN=		ln
 
 # Portable install script (configure doesn't always guess right)
-INSTALL=	/usr/bin/install -c
+INSTALL=	/usr/local/bin/ginstall -c
 INSTALL_PROGRAM=${INSTALL}
 INSTALL_SCRIPT= ${INSTALL}
 INSTALL_DATA=	${INSTALL} -m 644
@@ -67,7 +67,7 @@ INSTALL_DATA=	${INSTALL} -m 644
 # Also, making them read-only seems to be a good idea...
 INSTALL_SHARED= ${INSTALL} -m 555
 
-MKDIR_P=	/usr/bin/mkdir -p
+MKDIR_P=	/usr/local/bin/gmkdir -p
 
 MAKESETUP=      $(srcdir)/Modules/makesetup
 
@@ -92,11 +92,11 @@ PY_CFLAGS_NODIST=$(CONFIGURE_CFLAGS_NODIST) $(CFLAGS_NODIST)
 # environment variables
 PY_CPPFLAGS=	$(BASECPPFLAGS) -I. -IInclude -I$(srcdir)/Include $(CONFIGURE_CPPFLAGS) $(CPPFLAGS)
 PY_LDFLAGS=	$(CONFIGURE_LDFLAGS) $(LDFLAGS)
-NO_AS_NEEDED=	-Wl,--no-as-needed
+NO_AS_NEEDED=	
 LDLAST=		
 SGI_ABI=	
-CCSHARED=	-fPIC
-LINKFORSHARED=	-Xlinker -export-dynamic
+CCSHARED=	
+LINKFORSHARED=	-Wl,-stack_size,1000000  -framework CoreFoundation
 ARFLAGS=	rc
 # Extra C flags added for building the interpreter object files.
 CFLAGSFORSHARED=
@@ -105,10 +105,10 @@ PY_CORE_CFLAGS=	$(PY_CFLAGS) $(PY_CFLAGS_NODIST) $(PY_CPPFLAGS) $(CFLAGSFORSHARE
 
 
 # Machine-dependent subdirectories
-MACHDEP=	linux
+MACHDEP=	darwin
 
 # Multiarch directory (may be empty)
-MULTIARCH=	x86_64-linux-gnu
+MULTIARCH=	
 
 # Install prefix for architecture-independent files
 prefix=		/usr/local
@@ -136,10 +136,10 @@ CONFINCLUDEPY=	$(CONFINCLUDEDIR)/python$(LDVERSION)
 
 # Symbols used for using shared libraries
 SHLIB_SUFFIX=	.so
-EXT_SUFFIX=	.cpython-35m-x86_64-linux-gnu.so
-LDSHARED=	$(CC) -shared $(PY_LDFLAGS)
-BLDSHARED=	$(CC) -shared $(PY_LDFLAGS)
-LDCXXSHARED=	$(CXX) -shared
+EXT_SUFFIX=	.cpython-35m-darwin.so
+LDSHARED=	$(CC) -bundle -undefined dynamic_lookup $(PY_LDFLAGS)
+BLDSHARED=	$(CC) -bundle -undefined dynamic_lookup $(PY_LDFLAGS)
+LDCXXSHARED=	$(CXX) -bundle -undefined dynamic_lookup
 DESTSHARED=	$(BINLIBDEST)/lib-dynload
 
 # Executable suffix (.exe on Windows and Mac OS X)
@@ -155,8 +155,8 @@ PYTHONFRAMEWORKINSTALLDIR=
 # Deployment target selected during configure, to be checked
 # by distutils. The export statement is needed to ensure that the
 # deployment target is active during build.
-MACOSX_DEPLOYMENT_TARGET=
-#export MACOSX_DEPLOYMENT_TARGET
+MACOSX_DEPLOYMENT_TARGET=10.15
+export MACOSX_DEPLOYMENT_TARGET
 
 # Option to install to strip binaries
 STRIPFLAG=-s
@@ -205,8 +205,8 @@ LDLIBRARYDIR=
 INSTSONAME=	$(LDLIBRARY)
 
 
-LIBS=		-lpthread -ldl  -lutil
-LIBM=		-lm
+LIBS=		-ldl  -framework CoreFoundation
+LIBM=		
 LIBC=		
 SYSLIBS=	$(LIBM) $(LIBC)
 SHLIBS=		$(LIBS)
@@ -223,8 +223,8 @@ BUILDPYTHON=	python$(BUILDEXE)
 
 PYTHON_FOR_BUILD=./$(BUILDPYTHON) -E
 _PYTHON_HOST_PLATFORM=
-BUILD_GNU_TYPE=	x86_64-unknown-linux-gnu
-HOST_GNU_TYPE=	x86_64-unknown-linux-gnu
+BUILD_GNU_TYPE=	x86_64-apple-darwin19.3.0
+HOST_GNU_TYPE=	x86_64-apple-darwin19.3.0
 
 # Tcl and Tk config info from --with-tcltk-includes and -libs options
 TCLTK_INCLUDES=	
@@ -1157,7 +1157,7 @@ maninstall:	altmaninstall
 	(cd $(DESTDIR)$(MANDIR)/man1; $(LN) -s python$(VERSION).1 python3.1)
 
 # Install the library
-PLATDIR=	plat-linux
+PLATDIR=	plat-darwin
 MACHDEPS=	$(PLATDIR)
 XMLLIBSUBDIRS=  xml xml/dom xml/etree xml/parsers xml/sax
 LIBSUBDIRS=	tkinter tkinter/test tkinter/test/test_tkinter \
