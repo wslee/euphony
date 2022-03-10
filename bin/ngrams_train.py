@@ -187,10 +187,14 @@ if __name__ == "__main__":
             # print(mapped_tokens)
             # print()
 
-            for i in range(len(mapped_tokens) - 2):
+            mapped_tokens = ["_"] + ["_"] + mapped_tokens
+            for i in range(len(mapped_tokens)-2):
                 ngrams.append((mapped_tokens[i]+','+mapped_tokens[i+1], mapped_tokens[i+2]))
+
+            # for i in range(len(mapped_tokens) - 2):
+            #     ngrams.append((mapped_tokens[i]+','+mapped_tokens[i+1], mapped_tokens[i+2]))
         
-        term_prog = [Tcond.WRITE_VALUE]
+        term_prog = [Tcond.PREV_DFS, Tcond.WRITE_VALUE, Tcond.PREV_DFS, Tcond.WRITE_VALUE] # this is close to what we want, but it's inverted I think
         # ngram_freqs = defaultdict(list)
         # ngram_probs = defaultdict(dict)
         ngram_freqs = defaultdict(list)

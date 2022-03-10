@@ -118,14 +118,17 @@ def compute_m(stat_map, grammar, fetchop_func):
         updated = F()
     return m
 
-
+# m is a map of nonterminal -> (-log probability)
+# nts is a list of nonterminals i guess
 def heuristic(m, nts):
     score = 0.0
     for nt in nts:
         score = score + m[nt]
     return score
 
-
+# wtf is "sens"
+# m_sens[nt][ctx] = min_logprob
+# 2d dictionary, first key is a nonterminal, second key is a context
 def compute_m_sens(m, stat_map, grammar, fetchop_func):
     if stat_map is None: return None
     rules = grammar.rules
@@ -269,10 +272,10 @@ class SPhog:
         self.fetchop_func = get_fetchop_func(specification, grammar)
         self.m = compute_m(self.stat_map, grammar, self.fetchop_func)
         self.m_sens = compute_m_sens(self.m, self.stat_map, grammar, self.fetchop_func)
-        # self.print_phog()
+        self.print_phog()
 
     def print_phog(self):
-        print('Instr : ', self.instrs)
+        print('Instr : ', self.instrs) # instrs is basically a dummy value for the ngrams model
         for cond, topsymb2prob in self.stat_map.items():
             for topsymb, prob in topsymb2prob.items():
                 if prob > 0.001:
@@ -403,17 +406,54 @@ class SPhog:
             num_points = len(points)
             _,current_str = frontier.get()
             (current, nts_addrs, (ph_vars, nts, current_expr)) = strrewrite_to_rewrite[current_str]
+            # strrewrite_to_rewrite: rewrite * addr of leftmost non-terminal symbol * (placeholder variables * non-terminals * expr)
+            # why is "addr of leftmost non-terminal symbol" a list? e.g. (ite (str.prefixof "." ntString) ntString ntString) [[0, 1], [1], [2]]
+            # --> there should be 3 nonterminals here (the 3 ntStrings)
             if len(nts) == 0:
                 #print('%50s :\t %.2f' % (exprs.expression_to_string(current_expr), cost_so_far[current_str]), flush=True)
                 yield [current_expr]
             else:
                 assert (len(nts_addrs) > 0)
+                # print("---")
                 _, ctxt = get_ctxt(self.fetchop_func, current_expr, nts_addrs[0], instrs, {tuple(addr) for addr in nts_addrs[1:]})
-                cond = ','.join(ctxt)
-                # print("context:", cond, "current expr:", exprs.expression_to_string(current_expr))
-                # observation: get_ctxt is broken for our ngrams
-                # for ngrams and pcfg, the context is basically null (or "_")
+                # print(current_str, exprs.expression_to_string(current_expr), nts_addrs, nts, ctxt)
+                # get_ctxt(fetchop_func, partial_ast, curr, instrs, banned={}, training=False)
+                # what if i wrote my own get_ctxt for ngrams? like, given current_expr
+                '''
+                e.g. for ngram_str2:
+                Start_ph_192 []
+                ntString_ph_193 []
+                (int.to.str ntInt_ph_209) [0]
+                (ite ntBool_ph_211 ntString_ph_212 ntString_ph_213) [0]
+                (str.++ ntString_ph_195 ntString_ph_196) [0]
+                (str.at ntString_ph_205 ntInt_ph_206) [0]
+                (str.replace ntString_ph_199 ntString_ph_200 ntString_ph_201) [0]
+                (str.substr ntString_ph_217 ntInt_ph_218 ntInt_ph_219) [0]
+                (int.to.str (+ ntInt_ph_223 ntInt_ph_224)) [0, 0]
+                etc.
 
+                for phog_str:
+                Start_ph_192 []
+                ntString_ph_193 []
+                (str.substr ntString_ph_217 ntInt_ph_218 ntInt_ph_219) [0]
+                (str.substr _arg_0 ntInt_ph_223 ntInt_ph_224) [1]
+                (str.substr _arg_0 0 ntInt_ph_273) [2]
+                (str.substr _arg_0 0 (str.indexof ntString_ph_314 ntString_ph_315 ntInt_ph_316)) [2, 0]
+                (str.substr _arg_0 0 (str.indexof _arg_0 ntString_ph_320 ntInt_ph_321)) [2, 1]
+                (str.substr _arg_0 (+ ntInt_ph_279 ntInt_ph_280) ntInt_ph_281) [1, 0]
+                (str.substr _arg_0 (+ (str.indexof ntString_ph_441 ntString_ph_442 ntInt_ph_443) ntInt_ph_444) ntInt_ph_445) [1, 0, 0]
+                etc.
+
+                I clearly have no clue how nts_addrs is working... if i can figure that out, then maybe we stand a chance
+                because in order to get the context even for ngrams, we need to identify the nonterminal and then look 2 tokens to the left in the flattened string expr I think
+                '''
+                ctxt.reverse() # todo: make this only happen for ngram case or something lmao
+                cond = ','.join(ctxt)
+                # print("reversed ctxt", ctxt, stat_map.get(cond, {}))
+                # print("context:", cond, "partial AST:", exprs.expression_to_string(current_expr), "curr:", nts_addrs[0], "instrs:", instrs, "banned:", {tuple(addr) for addr in nts_addrs[1:]})
+                # observation: get_ctxt is broken for our ngrams
+                # for ngrams and pcfg, the context is always null (or "_")
+                
                 # one step left-most expansion
                 for rule, next_rewrite, generated_nts_addrs in grammar.one_step_expand(current, nts_addrs[0]):
                     next_nts_addrs = nts_addrs[1:] if len(generated_nts_addrs) == 0 else generated_nts_addrs + nts_addrs[1:]
@@ -424,6 +464,7 @@ class SPhog:
                     # if it is non-terminal rewriting, it causes no cost.
                     _, _, rule_expr = rule.to_template_expr()
                     topsymb = self.fetchop_func(rule_expr)
+                    # print("topsymb", topsymb, stat_map.get(cond, {}).get(topsymb, 0.001))
                     if isinstance(rule, grammars.NTRewrite):
                         expand_cost = 0.0
                     else:

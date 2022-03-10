@@ -635,7 +635,20 @@ def get_ctxt(fetchop_func, partial_ast, curr, instrs, banned={}, training=False)
 
     ctxt = []
     curr_addr = list(curr)
-    for hd in instrs:
+    '''
+    (str.substr (str.substr _arg_0 0 (str.indexof _arg_0 " " 0)) 1 (str.len ntString)) -- currentStr
+    (str.substr (str.substr _arg_0 0 (str.indexof _arg_0 " " 0)) 1 (str.len ntString_ph_4970)) -- current_expr as a string
+    [[2, 0]] -- nts_addrs
+    ['ntString'] -- nts
+    ['str.len', '1'] -- resulting context
+
+        0 Tcond.PREV_DFS [2, 0]
+        1 Tcond.WRITE_VALUE [2] --> this writes str.len
+        2 Tcond.PREV_DFS [2]
+        3 Tcond.WRITE_VALUE [1]
+    '''
+    for i, hd in enumerate(instrs): # for phog_str it's like [<Tcond.PREV_DFS: 5>, <Tcond.WRITE_VALUE: 6>, <Tcond.PREV_DFS: 5>, <Tcond.WRITE_VALUE: 6>]
+        # print(i, hd, curr_addr)
         if hd == Tcond.UP:
             if len(curr_addr) > 0:
                 curr_addr.pop()
@@ -660,7 +673,7 @@ def get_ctxt(fetchop_func, partial_ast, curr, instrs, banned={}, training=False)
                 sibling = get_children(parent)
                 if last + 1 < len(sibling): addr_append(curr_addr, last + 1)
                 else: addr_append(curr_addr, last)
-        elif hd == Tcond.PREV_DFS:
+        elif hd == Tcond.PREV_DFS: # previous node in depth-first left-to-right traversal order
             if len(curr_addr) > 0:
                 last = curr_addr.pop()
                 if last > 0:
