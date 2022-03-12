@@ -25,7 +25,7 @@ circuit_test = [
     "CrCy_8-P12-D5-sIn3.sl", "CrCy_8-P12-D7-sIn1.sl",
     "CrCy_8-P12-D7-sIn5.sl", "CrCy_8-P12-D9-sIn1.sl"
 ]
-
+ff_test = ["stackoverflow12.sl","exceljet5","dr-name-long.sl","firstname-long.sl","lastname-long.sl","name-combine-2-long.sl","name-combine-3-long.sl","name-combine-4-long.sl","name-combine-long.sl","phone-1-long.sl","phone-2-long.sl","phone-3-long.sl","phone-4-long.sl","phone-5-long.sl","phone-6-long.sl","phone-7-long.sl","phone-8-long.sl","phone-9-long.sl","phone-long.sl","reverse-name-long.sl","univ_1.sl","univ_1_short.sl"]
 # string_test = [
 #     "phone-5.sl", "phone-5-long.sl", "phone-5-long-repeat.sl", "phone-5-short.sl",
 #     "phone-6.sl", "phone-6-long.sl", "phone-6-long-repeat.sl", "phone-6-short.sl",
@@ -112,10 +112,12 @@ def run(args, logger):
     inputs = [ f for f in os.listdir('benchmarks/' + args.cmd + '/test') \
                if f.endswith('.sl')][0:20]
     inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ]
-    inputs = sorted(inputs)
-    if(args.cmd == "string") :
+    if args.cmd == "string":
         inputs = string_test
-    
+    elif args.cmd == "string_flashfill":
+            inputs = ff_test
+    inputs = sorted(inputs)
+
     # print(inputs)
     print_header(args)
     for f in inputs:
