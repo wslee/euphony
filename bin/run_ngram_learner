@@ -30,7 +30,6 @@ if [ -z "$PYPATH" ]; then
 	echo "python3 not found"
 else
 	PYTHONPATH=$EUPHONY_HOME/thirdparty/libeusolver/build:$EUPHONY_HOME/thirdparty/z3/build/python "$PYPATH" $EUPHONY_HOME/bin/ngrams_train.py \
-	-n 3\
 	-lambda_penalize $lambda_val \
 	-out $phog_file_name \
 	$training_instances

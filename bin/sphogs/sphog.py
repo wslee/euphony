@@ -447,7 +447,8 @@ class SPhog:
                 I clearly have no clue how nts_addrs is working... if i can figure that out, then maybe we stand a chance
                 because in order to get the context even for ngrams, we need to identify the nonterminal and then look 2 tokens to the left in the flattened string expr I think
                 '''
-                ctxt.reverse() # todo: make this only happen for ngram case or something lmao
+                # ctxt.reverse() # todo: make this only happen for ngram case or something lmao
+                # print(ctxt)
                 cond = ','.join(ctxt)
                 # print("reversed ctxt", ctxt, stat_map.get(cond, {}))
                 # print("context:", cond, "partial AST:", exprs.expression_to_string(current_expr), "curr:", nts_addrs[0], "instrs:", instrs, "banned:", {tuple(addr) for addr in nts_addrs[1:]})

@@ -26,12 +26,13 @@ circuit_test = [
     "CrCy_8-P12-D7-sIn5.sl", "CrCy_8-P12-D9-sIn1.sl"
 ]
 
-string_test = [
-    "phone-5.sl", "phone-5-long.sl", "phone-5-long-repeat.sl", "phone-5-short.sl",
-    "phone-6.sl", "phone-6-long.sl", "phone-6-long-repeat.sl", "phone-6-short.sl",
-    "phone-7.sl", "phone-7-long.sl", "phone-7-long-repeat.sl", "phone-7-short.sl"
-]
-
+# string_test = [
+#     "phone-5.sl", "phone-5-long.sl", "phone-5-long-repeat.sl", "phone-5-short.sl",
+#     "phone-6.sl", "phone-6-long.sl", "phone-6-long-repeat.sl", "phone-6-short.sl",
+#     "phone-7.sl", "phone-7-long.sl", "phone-7-long-repeat.sl", "phone-7-short.sl"
+# ]
+# below is the string benchmarks from the paper
+string_test = ["exceljet1.sl","exceljet3.sl","exceljet4.sl","stackoverflow1.sl","stackoverflow2.sl","stackoverflow3.sl","stackoverflow4.sl","stackoverflow5.sl","stackoverflow6.sl","stackoverflow7.sl","stackoverflow8.sl","stackoverflow9.sl","stackoverflow10.sl","stackoverflow11.sl","phone-5.sl","phone-5-long.sl","phone-5-long-repeat.sl","phone-5-short.sl","phone-6.sl","phone-6-long.sl","phone-6-long-repeat.sl","phone-6-short.sl","phone-7.sl","phone-7-long.sl","phone-7-long-repeat.sl","phone-7-short","exceljet2.sl"]
 def is_valid(f):
     return \
         f.startswith('exceljet') \
@@ -112,6 +113,9 @@ def run(args, logger):
                if f.endswith('.sl')][0:20]
     inputs = inputs if args.cmd == "string_flashfill" else [ f for f in inputs if is_valid(f) ]
     inputs = sorted(inputs)
+    if(args.cmd == "string") :
+        inputs = string_test
+    
     # print(inputs)
     print_header(args)
     for f in inputs:
