@@ -6,5 +6,5 @@ export Z3_LIBRARY_PATH="$EUPHONY_HOME/thirdparty/z3/build/python"
 if [ -z "$PYPATH" ]; then
 	echo "python3 not found"
 else
-	PYTHONPATH=$EUPHONY_HOME/thirdparty/libeusolver/build:$EUPHONY_HOME/thirdparty/z3/build/python "$PYPATH" $EUPHONY_HOME/bin/benchmarks.py -sphog $EUPHONY_HOME/bin/trained/pcfg_circuit "$1"
+	PYTHONPATH=$EUPHONY_HOME/thirdparty/libeusolver/build:$EUPHONY_HOME/thirdparty/z3/build/python "$PYPATH" $EUPHONY_HOME/bin/benchmarks.py -sphog $EUPHONY_HOME/circuit_pcfg "$1"
 fi
