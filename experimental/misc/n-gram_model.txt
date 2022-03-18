@@ -1,0 +1,73 @@
+n-gram model
+===
+
+given 11440431.sl, what would the 3-grams look like?
+
+
+(define-fun f_1 ((_arg_0 String)) String (str.replace (str.replace _arg_0 "CAN" "US") (str.++ " " "US") ""))
+
+strip all parens:
+define-fun f_1 _arg_0 String String str.replace str.replace _arg_0 "CAN" "US" str.++ " " "US" ""
+
+
+(define-fun f_1 ((_arg_0 String)) String (str.replace (str.replace _arg_0 "CAN" "US") (str.++ " " "US") ""))
+
+str.replace(_arg_0 "CAN" S)
+S[_arg_0, "CAN"] -> "US" (1)
+str.replace(S "CAN" "US")
+S["CAN" "US"] -> _arg_0 (1)
+
+
+
+this is the current sentential form or something that we're trying to extend? str.replace(_arg_0 "CAN" S)
+assume 3-grams, so we look 2 tokens backward (to the left)
+-> _arg_0 and "CAN"
+say you want the probability of S="US"
+then P(S="US" && token0=_arg_0 && token1="CAN") = P(token0=_arg_0) * P(token1="CAN" | token0=_arg_0) * P(S="US" | token0=_arg_0 && token1="CAN")
+
+#assumme we have unigram, bigram, and trigrams
+
+str.replace(S "CAN" "US")
+
+P(S=case 1 && str.replace) = P(case 1 | str.replace) * P(str.replace)
+                            ^ bigram probability       ^ unigram probability
+
+
+define-fun f_1 _arg_0 String String str.replace str.replace _arg_0 "CAN" "US" str.++ " " "US" ""
+0          1   2      3      4      5           6           7      8     9    10     11  12   13
+
+unigram counts:
+define-fun: 1 --> 1/14 probability
+f_1: 1 --> 1/14 etc.
+_arg_0: 2
+String: 2
+str.replace: 2 --> 1/7 probability
+"CAN": 1
+"US": 2
+str.++: 1
+" ": 1
+"": 1
+
+bigram counts:
+(blank, define-fun): 1
+(define-fun, f_1): 1
+(f_1, _arg_0): 1
+
+
+
+
+
+
+str.replace S1 S2 S3
+
+
+1. Finish understanding get_expression_info and get_data_expr -> we need to understand how they convert the expressions into their feature map (the input-output agnostic thing with Var and C_i)
+
+2. Convert to n-grams -> we want agnostic trigrams basically
+
+3. Run bench mark and see what happens check frequency and see if mle does that)
+-> my understanding of n-gram model is that the probabilities are based off of frequency counts. IDK if their code will give that to us out of the box.
+
+
+
+

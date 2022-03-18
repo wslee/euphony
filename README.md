@@ -64,3 +64,6 @@ $ ./bin/run_[string | bitvec | circuit] [a SyGuS input file]
 # For example
 $ ./bin/run_string benchmarks/string/test/exceljet1.sl
 ```
+## Run N-Grams
+N-gram models have been trained in the experimental/[domain] folder. To run artifact on one of these ngram files, use the --ngram=True flag. For example
+```./artifact string --timeout 3600 --only_euphony --ngram=True```
